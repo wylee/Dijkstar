@@ -7,7 +7,7 @@
 # Copyright (C) 2004-2007, Wyatt Baldwin. All rights reserved.
 #
 # Licensed under the MIT license.
-#     
+#
 #    http://www.opensource.org/licenses/mit-license.php
 #
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
@@ -39,7 +39,7 @@ def single_source_shortest_paths(G, H, s, d=None, weight_func=None,
 
     ``G``
         Graph of sorts. "v" or "u" is a vertex; "e" is an edge.
-        
+
         {
             'nodes': {  # Adjacency matrix
                 v: {u: e, ...},  # Vertex v goes to vertex u via edge e
@@ -61,7 +61,7 @@ def single_source_shortest_paths(G, H, s, d=None, weight_func=None,
         be used to determine a different weight for the edge.
 
     ``H``
-        "Annex" to ``G``; this is a graph just like ``G`` that can be used to 
+        "Annex" to ``G``; this is a graph just like ``G`` that can be used to
         augment ``G`` without altering it
 
     ``s``
@@ -232,10 +232,5 @@ def find_path(G, H, s, d, weight_func=None, heuristic_func=None):
         * The total weight of the path
 
     """
-    P, W = singleSourceShortestPaths(
-        G, H, s, d,
-        weight_func=weight_func,
-        heuristic_func=heuristic_func
-    )
+    P, W = single_source_shortest_paths(G, H, s, d, weight_func,heuristic_func)
     return extract_shortest_path_from_predecessor_list(P, d)
-
