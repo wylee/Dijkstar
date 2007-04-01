@@ -1,83 +1,88 @@
-################################################################################
+###############################################################################
 # $Id$
 # Created 2004-12-28.
 #
-# Path finding functions.
+# Dijkstra/A* path-finding functions.
 #
-# Copyright (C) 2006 Wyatt Baldwin, byCycle.org <wyatt@bycycle.org>.
-# All rights reserved.
+# Copyright (C) 2004-2007, Wyatt Baldwin. All rights reserved.
 #
-# For terms of use and warranty details, please see the LICENSE file included
-# in the top level of this distribution. This software is provided AS IS with
-# NO WARRANTY OF ANY KIND.
-################################################################################
-"""Path finding functions.
-
-TODO:
-    - Write a function to do All Pairs Shortest Paths
-
-"""
-# TODO: use Fibonnaci heap instead of built-in!
+# Licensed under the MIT license.
+#     
+#    http://www.opensource.org/licenses/mit-license.php
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+###############################################################################
+"""Dijkstra/A* path-finding functions."""
+import sys
 import heapq
 
 
-infinity = 2**31 - 1  # Largest signed int
+infinity = sys.maxint
 
 
-class SingleSourceShortestPathsError(Exception): pass
-class SingleSourceShortestPathsNoPathError(SingleSourceShortestPathsError): pass
+class DijkstarError(Exception):
+    """Base class for Dijkstar errors."""
+
+class NoPathError(DijkstarError):
+    """Error raised when a path can't be found to a given node, ``d``."""
 
 
-def singleSourceShortestPaths(G, H, s, d=None,
-                              weightFunction=None,
-                              heuristicFunction=None):
-    """Dijkstra with a few twists
+def single_source_shortest_paths(G, H, s, d=None, weight_func=None,
+                                 heuristic_func=None):
+    """Find path from node ``s`` to all other nodes, or just to ``d``.
 
     ``G``
-        Graph of sorts
+        Graph of sorts. "v" or "u" is a vertex; "e" is an edge.
         
-        (# Adjacency list
-            (((v, e), (v, e), (v, e)),
-             ((v, e), (v, e)),
-             .
-             .
-             .
-            ),
-         # Edge attributes
-             ((a, b, c, d),
-              (a, b, c, d),
-              .
-              .
-              .
-             )
-        )
+        {
+            'nodes': {  # Adjacency matrix
+                v: {u: e, ...},  # Vertex v goes to vertex u via edge e
+                .
+                .
+                .
+             },
 
-        Edge attibute list _must_ contain the weight entry first; they may
+             'edges': {  # Edge attributes
+                 e: (weight, attr_a, attr_b, ...),  # Edge e's attributes
+                 .
+                 .
+                 .
+             }
+        }
+
+        Edge attribute lists _must_ contain the weight entry first; they may
         also contain other attributes of the edge. These other attributes can
         be used to determine a different weight for the edge.
 
     ``H``
-        "Annex" to G
+        "Annex" to ``G``; this is a graph just like ``G`` that can be used to 
+        augment ``G`` without altering it
 
     ``s``
         Start node ID
 
     ``d``
-        Destination node ID. If d is None (default) the algorithm is run
-        normally. If d has a value, the algorithm is stopped when a path to d
-        has been found.
+        Destination node ID. If ``d`` is None (default) the algorithm is run
+        normally. If ``d`` has a value, the algorithm is stopped when a path
+        to ``d`` has been found.
 
-    ``weightFunction``
+    ``weight_func``
         Function to apply to each edge to modify its base weight.
 
-    ``heuristicFunction``
+    ``heuristic_func``
         A function to apply at each iteration to help the poor dumb machine
         try to move toward the destination instead of just any and every which
         way.
 
     return
-        `list` -- Predecessor list {v => (u, e), ...}
-        `list` -- The weights of the paths from s to all v in G
+        * Predecessor mapping {v => (u, e), ...}
+        * Weights of paths from node ``s`` to all reached nodes {v => w, ...}
 
     """
     # weights of shortest paths from s to all v (ID of v => w)
@@ -124,7 +129,7 @@ def singleSourceShortestPaths(G, H, s, d=None,
 
             # Get the weight of the edge running from u to v
             try:
-                w_of_e = weightFunction(v, e_attrs, prev_e_attrs)
+                w_of_e = weight_func(v, e_attrs, prev_e_attrs)
             except TypeError:
                 w_of_e = e_attrs[0]
 
@@ -139,7 +144,7 @@ def singleSourceShortestPaths(G, H, s, d=None,
             # in the right direction (generally more toward the goal instead
             # of away from it).
             #try:
-            #    w_of_s_to_u_plus_w_of_e += heuristicFunction(e)
+            #    w_of_s_to_u_plus_w_of_e += heuristic_func(e)
             #except TypeError:
             #    pass
 
@@ -172,24 +177,27 @@ def singleSourceShortestPaths(G, H, s, d=None,
                 break
 
     # There is no path from start to d when the weight to d is infinite
-    if W[d] == infinity:
-        raise SingleSourceShortestPathsNoPathError
+    if d is not None and W[d] == infinity:
+        raise NoPathError('Could not find a path from node %s to node %s' %
+                          (s, d))
 
     return P, W
 
 
-def extractShortestPathFromPredecessorList(P, d):
+def extract_shortest_path_from_predecessor_list(P, d):
     """Extract ordered lists of nodes, edges, weights from predecessor list.
 
-    ``P`` -- Predecessor list {u: (v, e), ...} u's predecessor is v via e
+    ``P``
+        Predecessor list {u: (v, e), ...} u's predecessor is v via e
 
-    ``d`` -- Destination node ID
+    ``d``
+        Destination node ID
 
     return
-        `list` -- The node IDs on the lightest path from start to d
-        `list` -- The edge IDs on the lightest path from start to d
-        `list` -- The weights of the edges on the shortest path from s to d
-        `int` -- The total weight of the segments with IDs in E
+        * The node IDs on the shortest path from origin to ``d``
+        * The edge IDs on the shortest path from origin to ``d``
+        * The weights of the edges on the shortest path from origin to ``d``
+        * The total weight of the path
 
     """
     V = []  # Node IDs on the shortest path from s to d
@@ -206,27 +214,28 @@ def extractShortestPathFromPredecessorList(P, d):
         u = predecessor_data[0]
     V.append(u)  # Start node
     V.reverse(); E.reverse(); W.reverse()
-    w = reduce(lambda x, y: x + y, W)
+    w = sum(W)
     return V, E, W, w
 
 
-def findPath(G, H, s, d, weightFunction=None, heuristicFunction=None):
-    """Find the shortest path from s to d in G.
+def find_path(G, H, s, d, weight_func=None, heuristic_func=None):
+    """Find the shortest path from ``s`` to ``d`` in ``G``.
 
     This function just combines finding the predecessor list with extracting
     the node IDs from that list in the proper (path) order, 'cause what you
     want is probably that ordered list.
 
     return
-        `list` -- The node IDs on the lightest path from start to d
-        `list` -- The edge IDs on the lightest path from start to d
-        `list` -- The weights of the edges on the shortest path from s to d
-        `int` -- The total weight of the segments with IDs in E
+        * The node IDs on the shortest path from origin to ``d``
+        * The edge IDs on the shortest path from origin to ``d``
+        * The weights of the edges on the shortest path from origin to ``d``
+        * The total weight of the path
 
     """
     P, W = singleSourceShortestPaths(
         G, H, s, d,
-        weightFunction=weightFunction,
-        heuristicFunction=heuristicFunction
+        weight_func=weight_func,
+        heuristic_func=heuristic_func
     )
-    return extractShortestPathFromPredecessorList(P, d)
+    return extract_shortest_path_from_predecessor_list(P, d)
+
