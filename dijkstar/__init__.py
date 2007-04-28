@@ -23,7 +23,7 @@ import sys
 import heapq
 
 
-infinity = sys.maxint
+infinity = sys.maxint ** 2
 
 
 class DijkstarError(Exception):
