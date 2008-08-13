@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='Dijkstar',
-    version='0.1a0',
+    version='1.0',
     description='Dijkstra/A* path finding functions',
     long_description="""
 Dijkstar
