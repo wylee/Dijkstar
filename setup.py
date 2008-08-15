@@ -30,7 +30,7 @@ https://svn.byCycle.org/spinoffs/Dijkstar
 
 Latest development version:
 
-https://svn.byCycle.org/spinoffs/Dijkstari#egg=Dijkstar-dev
+https://svn.byCycle.org/spinoffs/Dijkstar#egg=Dijkstar-dev
 
     """,
     license='BSD/MIT',
