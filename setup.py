@@ -10,9 +10,11 @@ Dijkstar
 
 Dijkstar is an implementation of Dijkstra's single-source shortest-paths
 algorithm. If a destination node is given, the algorithm halts when that node
-is reached; otherwise it continues until paths to all nodes are found.
+is reached; otherwise it continues until paths from the source node to all
+other nodes are found.
 
-Accepts an optional weighting function that will be called on every iteration. 
+Accepts an optional cost (or "weight") function that will be called on every
+iteration. 
 
 Also accepts an optional heuristic function that is used to push the algorithm 
 toward a destination instead of fanning out in every direction. Using such a 
@@ -22,7 +24,13 @@ heuristic function converts Dijkstra to A* (and this is where the name
 Performance is decent on a graph with 100,000+ nodes. Runs in around .5 
 seconds on average .
 
-See the source for the required graph structure.
+See the source for the required graph structure:
+
+http://svn.byCycle.org/spinoffs/Dijkstar
+
+Latest development version:
+
+http://svn.byCycle.org/spinoffs/Dijkstari#egg=Dijkstar-dev
 
     """,
     license='BSD/MIT',
