@@ -26,11 +26,11 @@ seconds on average .
 
 See the source for the required graph structure:
 
-http://svn.byCycle.org/spinoffs/Dijkstar
+https://svn.byCycle.org/spinoffs/Dijkstar
 
 Latest development version:
 
-http://svn.byCycle.org/spinoffs/Dijkstari#egg=Dijkstar-dev
+https://svn.byCycle.org/spinoffs/Dijkstari#egg=Dijkstar-dev
 
     """,
     license='BSD/MIT',
