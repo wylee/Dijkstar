@@ -14,23 +14,23 @@ is reached; otherwise it continues until paths from the source node to all
 other nodes are found.
 
 Accepts an optional cost (or "weight") function that will be called on every
-iteration. 
+iteration.
 
-Also accepts an optional heuristic function that is used to push the algorithm 
-toward a destination instead of fanning out in every direction. Using such a 
+Also accepts an optional heuristic function that is used to push the algorithm
+toward a destination instead of fanning out in every direction. Using such a
 heuristic function converts Dijkstra to A* (and this is where the name
 "Dijkstar" comes from).
 
-Performance is decent on a graph with 100,000+ nodes. Runs in around .5 
+Performance is decent on a graph with 100,000+ nodes. Runs in around .5
 seconds on average .
 
 See the source for the required graph structure:
 
-https://svn.byCycle.org/spinoffs/Dijkstar
+https://guest:guest@svn.byCycle.org/spinoffs/Dijkstar
 
 Latest development version:
 
-https://svn.byCycle.org/spinoffs/Dijkstar#egg=Dijkstar-dev
+https://guest:guest@svn.byCycle.org/spinoffs/Dijkstar#egg=Dijkstar-dev
 
     """,
     license='BSD/MIT',
