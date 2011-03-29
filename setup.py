@@ -26,18 +26,14 @@ seconds on average .
 
 See the source for the required graph structure:
 
-https://guest:guest@svn.byCycle.org/spinoffs/Dijkstar
+https://bitbucket.org/wyatt/dijkstar/src/tip/dijkstar/__init__.py
 
-Latest development version:
-
-https://guest:guest@svn.byCycle.org/spinoffs/Dijkstar#egg=Dijkstar-dev
-
-    """,
+""",
     license='BSD/MIT',
-    author='Wyatt L Baldwin, byCycle.org',
-    author_email='wyatt@byCycle.org',
+    author='Wyatt Lee Baldwin',
+    author_email='wyatt.lee.baldwin@gmail.com',
     keywords='Dijkstra A* algorithms',
-    url='http://wyattbaldwin.com/',
+    url='https://bitbucket.org/wyatt/dijkstar',
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
@@ -51,4 +47,3 @@ https://guest:guest@svn.byCycle.org/spinoffs/Dijkstar#egg=Dijkstar-dev
     install_requires=(),
     test_suite = 'nose.collector',
 )
-
