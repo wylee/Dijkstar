@@ -36,7 +36,7 @@ def find_path(graph, annex, s, d, cost_func=None, heuristic_func=None):
     :func:`extract_shortest_path_from_predecessor_list`.
 
     """
-    predecessors, costs = single_source_shortest_paths(
+    predecessors = single_source_shortest_paths(
         graph, annex, s, d, cost_func, heuristic_func)
     return extract_shortest_path_from_predecessor_list(predecessors, d)
 
@@ -91,8 +91,7 @@ def single_source_shortest_paths(graph, annex, s, d=None, cost_func=None,
         and every which way.
 
     return
-        - Predecessor map {v => (u, e), ...}
-        - Cost of path from ``s`` to all reached nodes {v => cost, ...}
+        - Predecessor map {v => (u, e, cost to traverse e), ...}
 
     """
     # Current known costs of paths from s to all nodes that have been
@@ -176,20 +175,20 @@ def single_source_shortest_paths(graph, annex, s, d=None, cost_func=None,
                     # running from u to v on the shortest known path
                     # from s to v. We include the edge's other
                     # attributes too.
-                    predecessors[v] = (u, e, e_attrs)
+                    predecessors[v] = (u, e, cost_of_e)
             else:
                 # No path to v had been found previously.
                 costs[v] = cost_of_s_to_u_plus_cost_of_e
-                predecessors[v] = (u, e, e_attrs)
+                predecessors[v] = (u, e, cost_of_e)
                 heapq.heappush(open, (cost_of_s_to_u_plus_cost_of_e, v))
 
             if v == d:
-                return predecessors, costs
+                return predecessors
 
     if d is not None and d not in costs:
         raise NoPathError('Could not find a path from {0} to {1}'.format(s, d))
 
-    return predecessors, costs
+    return predecessors
 
 
 def extract_shortest_path_from_predecessor_list(predecessors, d):
@@ -213,13 +212,11 @@ def extract_shortest_path_from_predecessor_list(predecessors, d):
     costs = []  # Costs of the edges on the shortest path from s to d
     u = d
     while u in predecessors:
-        predecessor_data = predecessors[u]
-        e = predecessor_data[1]
-        attrs = predecessor_data[2]
+        v, e, cost = predecessors[u]
         nodes.append(u)
         edges.append(e)
-        costs.append(attrs[0])
-        u = predecessor_data[0]
+        costs.append(cost)
+        u = v
     nodes.append(u)  # Start node
     nodes.reverse()
     edges.reverse()
