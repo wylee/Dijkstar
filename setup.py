@@ -1,4 +1,5 @@
-from setuptools import setup, find_packages
+from distutils.core import setup
+
 
 setup(
     name='Dijkstar',
@@ -9,17 +10,17 @@ Dijkstar
 ++++++++
 
 Dijkstar is an implementation of Dijkstra's single-source shortest-paths
-algorithm. If a destination node is given, the algorithm halts when that node
-is reached; otherwise it continues until paths from the source node to all
-other nodes are found.
+algorithm. If a destination node is given, the algorithm halts when that
+node is reached; otherwise it continues until paths from the source node
+to all other nodes are found.
 
-Accepts an optional cost (or "weight") function that will be called on every
-iteration.
+Accepts an optional cost (or "weight") function that will be called on
+every iteration.
 
-Also accepts an optional heuristic function that is used to push the algorithm
-toward a destination instead of fanning out in every direction. Using such a
-heuristic function converts Dijkstra to A* (and this is where the name
-"Dijkstar" comes from).
+Also accepts an optional heuristic function that is used to push the
+algorithm toward a destination instead of fanning out in every
+direction. Using such a heuristic function converts Dijkstra to A* (and
+this is where the name "Dijkstar" comes from).
 
 Performance is decent on a graph with 100,000+ nodes. Runs in around .5
 seconds on average .
@@ -41,9 +42,5 @@ https://bitbucket.org/wyatt/dijkstar/src/tip/dijkstar/__init__.py
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Programming Language :: Python',
-        ],
-    packages=find_packages(),
-    zip_safe=False,
-    install_requires=(),
-    test_suite = 'nose.collector',
+    ],
 )
