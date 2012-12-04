@@ -19,11 +19,7 @@
 # THE SOFTWARE.
 ###############################################################################
 """Dijkstra/A* path-finding functions."""
-import sys
 import heapq
-
-
-infinity = sys.maxint ** 2
 
 
 class DijkstarError(Exception):
@@ -86,7 +82,7 @@ def single_source_shortest_paths(G, H, s, d=None, weight_func=None,
 
     """
     # weights of shortest paths from s to all v (ID of v => w)
-    W = {s: 0, d: infinity}
+    W = {s: 0}
     # partially sorted list of nodes w/ known weights from s
     open = [(0, s)]
     # predecessor of each node that has shortest path from s
@@ -148,36 +144,31 @@ def single_source_shortest_paths(G, H, s, d=None, weight_func=None,
             #except TypeError:
             #    pass
 
-            # Get the weight of the path from s to v, if known
-            try:
-                w_of_s_to_v = W[v]
-            except KeyError:
-                # If no path to v had been found previously, v's path-weight
-                # from s will have been previously unknown (infinity);
-                # since we have just found a path from s to v, we need to add
-                # v's path-weight from s to the list of nodes with known
-                # weights from s
-                w_of_s_to_v = infinity  # note: this gets used below
-                heapq.heappush(open, (w_of_s_to_u_plus_w_of_e, v))
-
-            # If the current known weight from s to v is greater than the new
-            # weight we just found (weight of s to u plus weight of u to v
-            # across e), update v's weight in the weight list and update v's
-            # predecessor in the predecessor list (it's now u)
-            if w_of_s_to_v > w_of_s_to_u_plus_w_of_e:
+            if v in W:
+                # If the current known weight from s to v is greater
+                # than the weight of the path that was just found
+                # (weight of s to u plus weight of u to v across e),
+                # update v's weight in the weight list and update v's
+                # predecessor in the predecessor list (it's now u)
+                if W[v] > w_of_s_to_u_plus_w_of_e:
+                    W[v] = w_of_s_to_u_plus_w_of_e
+                    # u is v's predecessor node. e is the ID of the edge
+                    # running from u to v on the shortest known path
+                    # from s to v. We include the edge's other
+                    # attributes too.
+                    P[v] = (u, e, e_attrs)
+            else:
+                # No path to v had been found previously.
                 W[v] = w_of_s_to_u_plus_w_of_e
-                # u is v's predecessor node. e is the ID of the edge running
-                # from u to v on the shortest known path from s to v. We
-                # include the edge's other attributes too.
                 P[v] = (u, e, e_attrs)
+                heapq.heappush(open, (w_of_s_to_u_plus_w_of_e, v))
 
             # If a destination node was specified and we reached it, we're done
             if v == d:
                 open = None
                 break
 
-    # There is no path from start to d when the weight to d is infinite
-    if d is not None and W[d] == infinity:
+    if d is not None and d not in W:
         raise NoPathError('Could not find a path from node %s to node %s' %
                           (s, d))
 
