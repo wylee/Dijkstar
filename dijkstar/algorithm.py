@@ -10,7 +10,7 @@ class NoPathError(DijkstarError):
     """Raised when a path can't be found to a specified node."""
 
 
-def find_path(graph, annex, s, d, cost_func=None, heuristic_func=None):
+def find_path(graph, s, d, annex=None, cost_func=None, heuristic_func=None):
     """Find the shortest path from ``s`` to ``d`` in ``graph``.
 
     Returns ordered path data. For details, see
@@ -18,11 +18,11 @@ def find_path(graph, annex, s, d, cost_func=None, heuristic_func=None):
 
     """
     predecessors = single_source_shortest_paths(
-        graph, annex, s, d, cost_func, heuristic_func)
+        graph, s, d, annex, cost_func, heuristic_func)
     return extract_shortest_path_from_predecessor_list(predecessors, d)
 
 
-def single_source_shortest_paths(graph, annex, s, d=None, cost_func=None,
+def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
                                  heuristic_func=None):
     """Find path from node ``s`` to all other nodes or just to ``d``.
 
@@ -33,10 +33,6 @@ def single_source_shortest_paths(graph, annex, s, d=None, cost_func=None,
         special case, if ``cost_func`` isn't specified, edges will be
         assumed to be simple numeric values.
 
-    ``annex``
-        Another ``graph`` that can be used to augment ``graph`` without
-        altering it.
-
     ``s``
         Start node.
 
@@ -45,6 +41,10 @@ def single_source_shortest_paths(graph, annex, s, d=None, cost_func=None,
         run normally (i.e., the paths from ``s`` to all reachable nodes
         are found). If ``d`` is specified, the algorithm is stopped when
         a path to ``d`` has been found.
+
+    ``annex``
+        Another ``graph`` that can be used to augment ``graph`` without
+        altering it.
 
     ``cost_func``
         A function to apply to each edge to modify its base cost.
@@ -79,7 +79,7 @@ def single_source_shortest_paths(graph, annex, s, d=None, cost_func=None,
         prev_e = predecessors.get(u, None)
 
         # Get nodes adjacent to u...
-        if u in annex:
+        if annex and u in annex:
             A = annex[u]
         else:
             try:
