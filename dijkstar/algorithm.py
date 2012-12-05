@@ -56,7 +56,8 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
     ``heuristic_func``
         A function to apply at each iteration to help the poor dumb
         machine try to move toward the destination instead of just any
-        and every which way.
+        and every which way. It gets passed the same args as
+        ``cost_func``.
 
     return
         - Predecessor map {v => (u, e, cost to traverse e), ...}
@@ -115,10 +116,9 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
             # some other heuristic cost from v to d that is calculated
             # so as to keep us moving in the right direction (generally
             # more toward the goal instead of away from it).
-            #try:
-            #    cost_of_s_to_u_plus_cost_of_e += heuristic_func(e)
-            #except TypeError:
-            #    pass
+            if heuristic_func:
+                additional_cost = heuristic_func(u, v, e, prev_e)
+                cost_of_s_to_u_plus_cost_of_e += additional_cost
 
             if v in costs:
                 # If the current known cost from s to v is greater than
