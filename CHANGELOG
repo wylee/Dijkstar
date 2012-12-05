@@ -1,0 +1,64 @@
+1.1.0 (unreleased)
+------------------
+
+- Cleaned up a lot of stuff--made more readable, fixed formatting,
+  fixed single letter variable names, improved comments, cleaned up
+  setup.py, added README, added CHANGELOG
+
+- Added a module for tests; only one test so far, but that's better than
+  nothing!
+
+- Changed expected graph structure to simple adjacency matrix:
+  {u: {v: edge, ...}, ...}
+
+- Added Graph type to make construction and de/serialization of graphs
+  easier; it also serves as a template for custom graph types by
+  encapsulating the expected graph structure
+
+- Restructured package so algorithmic code is in separate module (not
+  __init__) and __init__ just exports the public API
+
+- Made the ``annex`` arg to find_path() and
+  single_source_shortest_paths() optional
+
+- Pass the current node as the first arg to cost functions
+
+- Reenabled heuristic function (it was commented out); pass it the same
+  args as cost function
+
+- Return computed edge costs from single_source_shortest_paths as part
+  of the predecessor list
+
+- Return only the predecessor list from single_source_shortest_paths;
+  don't return the dictionary of total costs of s to all v reached
+  (XXX: Would it maybe be useful to return this? Especially for the case
+  where no destination node is specified?)
+
+- Removed infinity wonkiness from single_source_shortest_paths (see
+  d89a851 for details; basically, sys.infinity was being used
+  unnecessarily as a special sentinel value)
+
+History
+-------
+
+Dijkstar was originally written in December of 2004, and hadn't changed
+much between then and just recently. It was spun off from the byCycle
+project (bycycle.org) in 2007.
+
+For years I had been planning to switch byCycle over to NetworkX, but
+I was busy with other things and byCycle languished. I found some free
+time recently to make the switch, but I found that NetworkX didn't fully
+serve my needs. (I also found that it takes a similar approach in its
+graph implementations: they're just dictionaries.)
+
+The feature I need that is missing from NetworkX is the ability to pass
+a cost function into the path finding function (this is something that
+byCycle relies on). NetworkX only works with precomputed costs.
+
+I decided to go ahead and polish up Dijkstar and release it as possible
+lightweight alternative to NetworkX for simple use cases.
+
+I was inspired by NetworkX and added a simple Graph class that has
+a stripped down version of NetorkX's graph API (add_edge, add_node).
+I also added utility methods for dumping graphs to and loading them from
+disk (using pickle).
