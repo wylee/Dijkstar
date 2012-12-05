@@ -96,9 +96,9 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
             e = neighbors[v]
 
             # Get the cost of the edge running from u to v
-            try:
+            if cost_func:
                 cost_of_e = cost_func(v, e, prev_e)
-            except TypeError:
+            else:
                 cost_of_e = e
 
             # Cost of s to u plus the cost of u to v across e--this
