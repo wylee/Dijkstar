@@ -47,7 +47,11 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
         altering it.
 
     ``cost_func``
-        A function to apply to each edge to modify its base cost.
+        A function to apply to each edge to modify its base cost. The
+        arguments it will be passed are the current node, a neighbor of
+        the current node, the edge that connects the current node to
+        that neighbor, and the edge that was previously traversed to
+        reach the current node.
 
     ``heuristic_func``
         A function to apply at each iteration to help the poor dumb
@@ -97,7 +101,7 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
 
             # Get the cost of the edge running from u to v
             if cost_func:
-                cost_of_e = cost_func(v, e, prev_e)
+                cost_of_e = cost_func(u, v, e, prev_e)
             else:
                 cost_of_e = e
 
