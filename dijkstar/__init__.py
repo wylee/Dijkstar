@@ -46,28 +46,11 @@ def single_source_shortest_paths(graph, annex, s, d=None, cost_func=None,
     """Find path from node ``s`` to all other nodes or just to ``d``.
 
     ``graph``
-        v and u are vertices; e is an edge.
-
-        {
-            'nodes': {  # Adjacency matrix
-                v: {u: e, ...},  # Vertex v goes to vertex u via edge e
-                .
-                .
-                .
-             },
-
-             'edges': {  # Edge attributes
-                 e: (cost, attr_a, attr_b, ...),  # Edge e's attributes
-                 .
-                 .
-                 .
-             }
-        }
-
-        Edge attribute lists _must_ contain the cost entry first; they
-        may also contain other attributes of the edge. These other
-        attributes can be used to determine a different cost for the
-        edge if ``cost_func`` is given.
+        A simple adjacency matrix (see :class:`dijkstra.graph.Graph`).
+        Other than the structure, no other assumptions are made about
+        the types of the nodes or edges in the graph. As a simple
+        special case, if ``cost_func`` isn't specified, edges will be
+        assumed to be simple numeric values.
 
     ``annex``
         Another ``graph`` that can be used to augment ``graph`` without
@@ -105,27 +88,21 @@ def single_source_shortest_paths(graph, annex, s, d=None, cost_func=None,
     # Predecessor of each node that has shortest path from s
     predecessors = {}
 
-    nodes, edges = graph['nodes'], graph['edges']
-    h_nodes, h_edges = annex['nodes'], annex['edges']
-
     while open:
         # In the nodes remaining in the graph that have a known cost
         # from s, find the node, u, that currently has the shortest path
         # from s.
         cost_of_s_to_u, u = heapq.heappop(open)
 
-        # Get the attributes of the segment crossed to get to u.
-        try:
-            prev_e_attrs = predecessors[u][2]
-        except KeyError:
-            prev_e_attrs = None
+        # The edge crossed to get to u
+        prev_e = predecessors.get(u, None)
 
         # Get nodes adjacent to u...
-        if u in h_nodes:
-            A = h_nodes[u]
+        if u in annex:
+            A = annex[u]
         else:
             try:
-                A = nodes[u]
+                A = graph[u]
             except KeyError:
                 # u has no outgoing edges
                 continue
@@ -137,16 +114,11 @@ def single_source_shortest_paths(graph, annex, s, d=None, cost_func=None,
         for v in A:
             e = A[v]
 
-            if e in h_edges:
-                e_attrs = h_edges[e]
-            else:
-                e_attrs = edges[e]
-
             # Get the cost of the edge running from u to v
             try:
-                cost_of_e = cost_func(v, e_attrs, prev_e_attrs)
+                cost_of_e = cost_func(v, e, prev_e)
             except TypeError:
-                cost_of_e = e_attrs[0]
+                cost_of_e = e
 
             # Cost of s to u plus the cost of u to v across e--this
             # is *a* cost from s to v that may or may not be less than
