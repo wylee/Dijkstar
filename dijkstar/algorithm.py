@@ -80,10 +80,10 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
 
         # Get nodes adjacent to u...
         if annex and u in annex:
-            A = annex[u]
+            neighbors = annex[u]
         else:
             try:
-                A = graph[u]
+                neighbors = graph[u]
             except KeyError:
                 # u has no outgoing edges
                 continue
@@ -92,8 +92,8 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
         # updating the cost of the shortest paths to any or all of
         # those nodes as necessary. v is the node across the current
         # edge from u.
-        for v in A:
-            e = A[v]
+        for v in neighbors:
+            e = neighbors[v]
 
             # Get the cost of the edge running from u to v
             try:
