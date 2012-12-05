@@ -1,7 +1,14 @@
-2.0b2 (unreleased)
+2.0b2 (2012-12-04)
 ------------------
 
 - Nothing changed yet.
+
+
+2.0b2 (2012-12-04)
+------------------
+
+Fixed broken package config. setup() call was missing packages option, so no
+packages were added to the distribution. Also added a MANIFEST.in.
 
 
 2.0b1 (2012-12-04)
