@@ -14,10 +14,9 @@ class Tests(unittest.TestCase):
             4: {2: 2, 3: 2, 5: 1},
             5: {2: 2, 4: 1},
         })
-        self.annex = Graph()
 
     def test(self):
-        result = find_path(self.graph, self.annex, 1, 4)
+        result = find_path(self.graph, 1, 4)
         nodes, edges, costs, total_cost = result
         self.assertEqual(nodes, [1, 2, 4])
         self.assertEqual(edges, [1, 2])
