@@ -33,9 +33,7 @@ class Graph(dict):
     @classmethod
     def load(cls, path):
         with open(path, 'rb') as loadfile:
-            data = pickle.load(loadfile)
-        graph = cls(data)
-        return graph
+            return pickle.load(loadfile)
 
     def dump(self, path):
         with open(path, 'wb') as dumpfile:
