@@ -1,5 +1,5 @@
 """Dijkstra/A* path-finding functions."""
-import heapq
+from heapq import heappush, heappop
 
 
 class DijkstarError(Exception):
@@ -78,7 +78,7 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
         # In the nodes remaining in the graph that have a known cost
         # from s, find the node, u, that currently has the shortest path
         # from s.
-        cost_of_s_to_u, u = heapq.heappop(open)
+        cost_of_s_to_u, u = heappop(open)
 
         # The edge crossed to get to u
         prev_e = predecessors.get(u, None)
@@ -137,7 +137,7 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
                 # No path to v had been found previously.
                 costs[v] = cost_of_s_to_u_plus_cost_of_e
                 predecessors[v] = (u, e, cost_of_e)
-                heapq.heappush(open, (cost_of_s_to_u_plus_cost_of_e, v))
+                heappush(open, (cost_of_s_to_u_plus_cost_of_e, v))
 
             if v == d:
                 return predecessors
