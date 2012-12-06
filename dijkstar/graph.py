@@ -1,3 +1,5 @@
+import marshal
+
 try:
     import cPickle as pickle
 except ImportError:
@@ -38,3 +40,32 @@ class Graph(dict):
     def dump(self, path):
         with open(path, 'wb') as dumpfile:
             pickle.dump(self, dumpfile)
+
+    @classmethod
+    def unmarshal(cls, path):
+        """Read graph from disk using marshal.
+
+        Marshalling is quite a bit faster than pickling, but only the
+        following types are supported: booleans, integers, long
+        integers, floating point numbers, complex numbers, strings,
+        Unicode objects, tuples, lists, sets, frozensets, dictionaries,
+        and code objects.
+
+        The method names `unmarshal` and `marshal` were chosen based on
+        this note in the standard library documentation: "Strictly
+        speaking, 'to marshal' means to convert some data from internal
+        to external form and 'unmarshalling' for the reverse process."
+
+        """
+        with open(path, 'rb') as loadfile:
+            data = marshal.load(loadfile)
+        return Graph(data)
+
+    def marshal(self, path):
+        """Write graph to disk using marshal.
+
+        See note in :meth:`unmarshal`.
+
+        """
+        with open(path, 'wb') as dumpfile:
+            marshal.dump(dict(self), dumpfile)
