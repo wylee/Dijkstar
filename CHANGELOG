@@ -1,14 +1,27 @@
 2.0b3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Tried to improve performance slightly by importing heappush and
+  heappop and using them directly in the single_source_shortest_paths
+  inner loop (instead of doing, e.g., heapq.heappush).
+
+- The Graph loaded by pickle.load is now returned directly. Before,
+  Graph.load was needlessly creating a new Graph initialized with the
+  Graph returned from pickle.load. Doesn't affect performance in any
+  noticeable way.
+
+- Added marshal and unmarshal methods to Graph. These are similar to the
+  dump and load methods but use the standard library marshal module
+  instead of pickle. Reading and writing using marshal is significantly
+  faster than pickle (reading from disk was about three times faster in
+  my tests), but marshal supports only built-in types.
 
 
 2.0b2 (2012-12-04)
 ------------------
 
-Fixed broken package config. setup() call was missing packages option, so no
-packages were added to the distribution. Also added a MANIFEST.in.
+Fixed broken package config. setup() call was missing packages option,
+so no packages were added to the distribution. Also added a MANIFEST.in.
 
 
 2.0b1 (2012-12-04)
@@ -50,6 +63,7 @@ packages were added to the distribution. Also added a MANIFEST.in.
 - Removed infinity wonkiness from single_source_shortest_paths (see
   d89a851 for details; basically, sys.infinity was being used
   unnecessarily as a special sentinel value)
+
 
 History
 -------
