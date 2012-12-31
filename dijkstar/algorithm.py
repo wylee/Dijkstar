@@ -139,9 +139,6 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
                 predecessors[v] = (u, e, cost_of_e)
                 heappush(open, (cost_of_s_to_u_plus_cost_of_e, v))
 
-            if v == d:
-                return predecessors
-
     if d is not None and d not in costs:
         raise NoPathError('Could not find a path from {0} to {1}'.format(s, d))
 
