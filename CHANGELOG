@@ -1,7 +1,8 @@
-2.0b4 (unreleased)
-------------------
+2.0 (2013-03-26)
+----------------
 
-- Nothing changed yet.
+- Assume Buildout 2.0.
+- Removed naive break-early logic (see r666129f3eed8).
 
 
 2.0b3 (2012-12-06)
