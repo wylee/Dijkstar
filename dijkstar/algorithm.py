@@ -74,7 +74,21 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
     # Predecessor of each node that has shortest path from s
     predecessors = {}
 
+    destination_specified = d is not None
+
+    if destination_specified:
+        # Keep track of which incoming nodes ``d`` has been visited
+        # from; when ``d`` has been visited from each of those nodes,
+        # the shortest path to ``d`` will have been found.
+        incoming_nodes = set()
+        incoming_nodes.update(graph.incoming_nodes[d])
+        if annex is not None:
+            incoming_nodes.update(annex.incoming_nodes[d])
+
     while open:
+        if destination_specified and not incoming_nodes:
+            break
+
         # In the nodes remaining in the graph that have a known cost
         # from s, find the node, u, that currently has the shortest path
         # from s.
@@ -99,6 +113,10 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
         # edge from u.
         for v in neighbors:
             e = neighbors[v]
+
+            if destination_specified and v == d:
+                # Record that d has been visited from u
+                incoming_nodes.remove(u)
 
             # Get the cost of the edge running from u to v
             if cost_func:
@@ -139,7 +157,7 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
                 predecessors[v] = (u, e, cost_of_e)
                 heappush(open, (cost_of_s_to_u_plus_cost_of_e, v))
 
-    if d is not None and d not in costs:
+    if destination_specified and d not in costs:
         raise NoPathError('Could not find a path from {0} to {1}'.format(s, d))
 
     return predecessors
