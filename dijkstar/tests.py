@@ -70,3 +70,11 @@ class Tests(unittest.TestCase):
             'c': ('f', 1, 1),
         }
         self.assertEqual(paths, expected)
+
+    def test_start_and_destination_same(self):
+        result = find_path(self.graph1, 1, 1)
+        nodes, edges, costs, total_cost = result
+        self.assertEqual(nodes, [1])
+        self.assertEqual(edges, [])
+        self.assertEqual(costs, [])
+        self.assertEqual(total_cost, 0)
