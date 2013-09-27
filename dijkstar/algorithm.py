@@ -131,10 +131,9 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
                 # predecessor list (it's now u)
                 if costs[v] > cost_of_s_to_u_plus_cost_of_e:
                     costs[v] = cost_of_s_to_u_plus_cost_of_e
-                    # u is v's predecessor node. e is the ID of the edge
-                    # running from u to v on the shortest known path
-                    # from s to v. We include the edge's other
-                    # attributes too.
+                    # u is v's predecessor node. e is the edge running
+                    # from u to v on the shortest known path from s to
+                    # v.
                     predecessors[v] = (u, e, cost_of_e)
             else:
                 # No path to v had been found previously.
