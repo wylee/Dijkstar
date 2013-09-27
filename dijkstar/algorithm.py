@@ -72,7 +72,7 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
     open = [(0, s)]
 
     # Predecessor of each node that has shortest path from s
-    predecessors = {}
+    predecessors = {s: None}
 
     while open:
         # In the nodes remaining in the graph that have a known cost
@@ -84,7 +84,7 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
             break
 
         # The edge crossed to get to u
-        prev_e = predecessors.get(u, None)
+        prev_e = predecessors[u]
 
         # Get nodes adjacent to u...
         if annex and u in annex:
@@ -144,6 +144,7 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
     if d is not None and d not in costs:
         raise NoPathError('Could not find a path from {0} to {1}'.format(s, d))
 
+    del predecessors[s]
     return predecessors
 
 
