@@ -64,82 +64,90 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
 
     """
     # Current known costs of paths from s to all nodes that have been
-    # reached so far
+    # reached so far. Note that "reached" is not the same as "visited".
     costs = {s: 0}
 
-    # Used with heapq to maintain a priority queue of nodes with known
-    # costs from s
-    open = [(0, s)]
-
-    # Predecessor of each node that has shortest path from s
+    # Predecessor of each node that has been reached from s.
     predecessors = {s: None}
 
-    while open:
+    # A priority queue of nodes with known costs from s. The nodes in
+    # this queue are candidates for visitation. Nodes are added to this
+    # queue when they are reached (but only if they have not already
+    # been visited).
+    visit_queue = [(0, s)]
+
+    # Nodes that have been visited. Once a node has been visited, it
+    # won't be visited again. Note that in this context "visited" means
+    # a node has been selected as having the lowest known cost (and it
+    # must have been "reached" to be selected).
+    visited = set()
+
+    while visit_queue:
         # In the nodes remaining in the graph that have a known cost
         # from s, find the node, u, that currently has the shortest path
         # from s.
-        cost_of_s_to_u, u = heappop(open)
+        cost_of_s_to_u, u = heappop(visit_queue)
 
         if u == d:
             break
 
-        # The edge crossed to get to u
-        prev_e = predecessors[u]
+        if u in visited:
+            # This will happen when u has been reached from multiple
+            # nodes before being visited (because multiple entries for
+            # u will have been added to the visit queue).
+            continue
 
-        # Get nodes adjacent to u...
+        visited.add(u)
+
         if annex and u in annex:
             neighbors = annex[u]
         else:
-            try:
-                neighbors = graph[u]
-            except KeyError:
-                # u has no outgoing edges
+            neighbors = graph[u] if u in graph else None
+
+        if not neighbors:
+            # u has no outgoing edges
+            continue
+
+        # The edge crossed to get to u
+        prev_e = predecessors[u]
+
+        # Check each of u's neighboring nodes to see if we can update
+        # its cost by reaching it from u.
+        for v in neighbors:
+            # Don't backtrack to nodes that have already been visited.
+            if v in visited:
                 continue
 
-        # ...and explore the edges that connect u to those nodes,
-        # updating the cost of the shortest paths to any or all of
-        # those nodes as necessary. v is the node across the current
-        # edge from u.
-        for v in neighbors:
             e = neighbors[v]
 
-            # Get the cost of the edge running from u to v
-            if cost_func:
-                cost_of_e = cost_func(u, v, e, prev_e)
-            else:
-                cost_of_e = e
+            # Get the cost of the edge running from u to v.
+            cost_of_e = cost_func(u, v, e, prev_e) if cost_func else e
 
             # Cost of s to u plus the cost of u to v across e--this
             # is *a* cost from s to v that may or may not be less than
-            # the current known cost to v
+            # the current known cost to v.
             cost_of_s_to_u_plus_cost_of_e = cost_of_s_to_u + cost_of_e
 
-            # When there is a heuristic function, we use
-            # a "guess-timated" cost, which is the normal cost plus
-            # some other heuristic cost from v to d that is calculated
-            # so as to keep us moving in the right direction (generally
-            # more toward the goal instead of away from it).
+            # When there is a heuristic function, we use a
+            # "guess-timated" cost, which is the normal cost plus some
+            # other heuristic cost from v to d that is calculated so as
+            # to keep us moving in the right direction (generally more
+            # toward the goal instead of away from it).
             if heuristic_func:
                 additional_cost = heuristic_func(u, v, e, prev_e)
                 cost_of_s_to_u_plus_cost_of_e += additional_cost
 
-            if v in costs:
+            if v not in costs or costs[v] > cost_of_s_to_u_plus_cost_of_e:
                 # If the current known cost from s to v is greater than
                 # the cost of the path that was just found (cost of s to
                 # u plus cost of u to v across e), update v's cost in
                 # the cost list and update v's predecessor in the
-                # predecessor list (it's now u)
-                if costs[v] > cost_of_s_to_u_plus_cost_of_e:
-                    costs[v] = cost_of_s_to_u_plus_cost_of_e
-                    # u is v's predecessor node. e is the edge running
-                    # from u to v on the shortest known path from s to
-                    # v.
-                    predecessors[v] = (u, e, cost_of_e)
-            else:
-                # No path to v had been found previously.
+                # predecessor list (it's now u). Note that if ``v`` is
+                # not present in the ``costs`` list, it's current cost
+                # is considered to be infinity.
                 costs[v] = cost_of_s_to_u_plus_cost_of_e
                 predecessors[v] = (u, e, cost_of_e)
-                heappush(open, (cost_of_s_to_u_plus_cost_of_e, v))
+                heappush(visit_queue, (cost_of_s_to_u_plus_cost_of_e, v))
 
     if d is not None and d not in costs:
         raise NoPathError('Could not find a path from {0} to {1}'.format(s, d))
