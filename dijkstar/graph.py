@@ -1,3 +1,4 @@
+import collections
 import marshal
 
 try:
@@ -20,13 +21,16 @@ class Graph(dict):
     """
 
     def __init__(self, data=None):
+        self.incoming_nodes = collections.defaultdict(set)
         if data:
-            self.update(data)
+            for u, neighbors in data.items():
+                self.add_node(u, neighbors)
 
     def add_edge(self, u, v, edge=None):
         """Add an ``edge`` from ``u`` to ``v``."""
         self.setdefault(u, {})
         self[u][v] = edge
+        self.incoming_nodes[v].add(u)
 
     def add_node(self, u, neighbors=None):
         """Add the node ``u``.
@@ -40,7 +44,7 @@ class Graph(dict):
         self.setdefault(u, {})
         if neighbors:
             for v, edge in neighbors.items():
-                self[u][v] = edge
+                self.add_edge(u, v, edge)
 
     @classmethod
     def load(cls, path):
