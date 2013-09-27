@@ -27,14 +27,31 @@ class Tests(unittest.TestCase):
             'i': {'f': 1, 'h': 1}
         })
 
-        self.graph3 = Graph({
+    @property
+    def graph3(self):
+        graph = Graph({
             'a': {'b': 10, 'c': 100, 'd': 1},
             'b': {'c': 10},
             'd': {'b': 1, 'e': 1},
             'e': {'f': 1},
-            'f': {'c': 1},
-            'g': {'b': 1}
         })
+
+        graph.add_node('f', {'c': 1})
+        graph['f'] = {'c': 1}
+
+        graph.add_edge('f', 'c', 1)
+        graph.add_edge('g', 'b', 1)
+
+        nodes = list(graph)
+        nodes.sort()
+        self.assertEqual(nodes, ['a', 'b', 'd', 'e', 'f', 'g'])
+
+        incoming = graph.get_incoming('c')
+        incoming_nodes = incoming.keys()
+        incoming_nodes.sort()
+        self.assertEqual(incoming_nodes, ['a', 'b', 'f'])
+
+        return graph
 
     def test_find_path_1(self):
         result = find_path(self.graph1, 1, 4)
