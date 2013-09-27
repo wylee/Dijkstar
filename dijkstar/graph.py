@@ -3,7 +3,7 @@ import marshal
 
 try:
     import cPickle as pickle
-except ImportError:
+except ImportError:  # pragma: no cover
     import pickle
 
 
