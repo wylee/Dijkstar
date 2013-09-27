@@ -84,12 +84,12 @@ class Tests(unittest.TestCase):
         self.assertEqual(total_cost, 4)
 
     def test_find_path_2(self):
-        path = find_path(self.graph2, 'a', 'i')[0];
-        self.assertEqual(path, ['a', 'd', 'e', 'f', 'i']);
+        path = find_path(self.graph2, 'a', 'i')[0]
+        self.assertEqual(path, ['a', 'd', 'e', 'f', 'i'])
 
     def test_find_path_3(self):
-        path = find_path(self.graph3, 'a', 'c')[0];
-        self.assertEqual(path, ['a', 'd', 'e', 'f', 'c']);
+        path = find_path(self.graph3, 'a', 'c')[0]
+        self.assertEqual(path, ['a', 'd', 'e', 'f', 'c'])
 
     def test_unreachable_dest(self):
         self.assertRaises(NoPathError, find_path, self.graph3, 'c', 'a')
@@ -98,7 +98,7 @@ class Tests(unittest.TestCase):
         self.assertRaises(NoPathError, find_path, self.graph3, 'a', 'z')
 
     def test_all_paths(self):
-        paths = single_source_shortest_paths(self.graph3, 'a');
+        paths = single_source_shortest_paths(self.graph3, 'a')
         expected = {
             'a': None,
             'd': ('a', 1, 1),
