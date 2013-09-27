@@ -152,7 +152,6 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
     if d is not None and d not in costs:
         raise NoPathError('Could not find a path from {0} to {1}'.format(s, d))
 
-    del predecessors[s]
     return predecessors
 
 
@@ -172,17 +171,19 @@ def extract_shortest_path_from_predecessor_list(predecessors, d):
         - The total cost of the path
 
     """
-    nodes = []  # Node IDs on the shortest path from s to d
-    edges = []  # Edge IDs on the shortest path from s to d
-    costs = []  # Costs of the edges on the shortest path from s to d
-    u = d
-    while u in predecessors:
-        v, e, cost = predecessors[u]
+    nodes = [d]  # Nodes on the shortest path from s to d
+    edges = []   # Edges on the shortest path from s to d
+    costs = []   # Costs of the edges on the shortest path from s to d
+    predecessor = predecessors[d]
+    while predecessor is not None:
+        # u is the node from which v was reached, e is the edge
+        # traversed to reach v from u, and cost is the cost of u to
+        # v over e. (Note that v is implicit--it's the previous u).
+        u, e, cost = predecessor
         nodes.append(u)
         edges.append(e)
         costs.append(cost)
-        u = v
-    nodes.append(u)  # Start node
+        predecessor = predecessors[u]
     nodes.reverse()
     edges.reverse()
     costs.reverse()

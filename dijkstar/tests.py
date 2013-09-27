@@ -61,6 +61,7 @@ class Tests(unittest.TestCase):
     def test_all_paths(self):
         paths = single_source_shortest_paths(self.graph3, 'a');
         expected = {
+            'a': None,
             'd': ('a', 1, 1),
             'b': ('d', 1, 1),
             'c': ('b', 1, 1),
