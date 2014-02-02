@@ -47,7 +47,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(nodes, ['a', 'b', 'd', 'e', 'f', 'g'])
 
         incoming = graph.get_incoming('c')
-        incoming_nodes = incoming.keys()
+        incoming_nodes = list(incoming.keys())
         incoming_nodes.sort()
         self.assertEqual(incoming_nodes, ['a', 'b', 'f'])
 
