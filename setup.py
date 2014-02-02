@@ -15,7 +15,7 @@ setup(
     author_email='wyatt.lee.baldwin@gmail.com',
     keywords='Dijkstra A* algorithms',
     url='https://bitbucket.org/wyatt/dijkstar',
-    classifiers=(
+    classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
@@ -23,6 +23,6 @@ setup(
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.3',
-    ),
+    ],
     packages=['dijkstar']
 )
