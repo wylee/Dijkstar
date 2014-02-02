@@ -1,7 +1,19 @@
-2.1 (unreleased)
+2.1 (2014-02-01)
 ----------------
 
-- Nothing changed yet.
+- Made Python 3 compatible (required one tiny change in test code).
+- Added a proper version of break-early.
+- Made Graph implement the MutableMapping interface (while keeping the
+  rest of its public API the same).
+- Keep track of each node's incoming nodes (not sure this is useful
+  though).
+- Improved single_source_shortest_paths() (see 782f1e23).
+  - Use "visited" and "reached" terminology.
+  - Don't backtrack to already-visited nodes.
+  - Update the best cost to a node every time it's reached.
+  - Simplify and remove redundancy.
+- Improved docstrings and comments throughout.
+- Add more tests.
 
 
 2.0 (2013-03-26)
