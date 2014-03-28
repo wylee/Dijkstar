@@ -68,7 +68,7 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
     costs = {s: 0}
 
     # Predecessor of each node that has been reached from s.
-    predecessors = {s: None}
+    predecessors = {s: (None, None, None)}
 
     # A priority queue of nodes with known costs from s. The nodes in
     # this queue are candidates for visitation. Nodes are added to this
@@ -174,16 +174,15 @@ def extract_shortest_path_from_predecessor_list(predecessors, d):
     nodes = [d]  # Nodes on the shortest path from s to d
     edges = []   # Edges on the shortest path from s to d
     costs = []   # Costs of the edges on the shortest path from s to d
-    predecessor = predecessors[d]
-    while predecessor is not None:
+    u, e, cost = predecessors[d]
+    while u is not None:
         # u is the node from which v was reached, e is the edge
         # traversed to reach v from u, and cost is the cost of u to
         # v over e. (Note that v is implicit--it's the previous u).
-        u, e, cost = predecessor
         nodes.append(u)
         edges.append(e)
         costs.append(cost)
-        predecessor = predecessors[u]
+        u, e, cost = predecessors[u]
     nodes.reverse()
     edges.reverse()
     costs.reverse()
