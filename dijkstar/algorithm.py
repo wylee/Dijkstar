@@ -109,7 +109,7 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
             continue
 
         # The edge crossed to get to u
-        prev_e = predecessors[u]
+        prev_e = predecessors[u][1]
 
         # Check each of u's neighboring nodes to see if we can update
         # its cost by reaching it from u.
