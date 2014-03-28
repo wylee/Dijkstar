@@ -70,6 +70,22 @@ class Tests(unittest.TestCase):
         self.assertEqual(costs, [0.5, 2])
         self.assertEqual(total_cost, 2.5)
 
+    def test_path_with_cost_func(self):
+        graph = {
+            'a': {'b': (1, 10, 'A'), 'c': (1.5, 2, 'C')},
+            'b': {'c': (1, 2, 'B'), 'd': (1, 10, 'A')},
+            'c': {'b': (1, 3, 'B'), 'd': (1.5, 2, 'D')},
+        }
+        def cost_func(u, v, e, prev_e):
+            cost = e[0]
+            cost *= e[1]
+            if prev_e is not None and e[2] != prev_e[2]:
+                cost *= 1.25
+            return cost
+        result = find_path(graph, 'a', 'd', cost_func=cost_func)
+        nodes, edges, costs, total_cost = result
+        self.assertEqual(nodes, ['a', 'c', 'd'])
+
     def test_find_path_with_heuristic(self):
         def heuristic(u, v, e, prev_e):
             cost = u + 1 if v == 2 else 0
