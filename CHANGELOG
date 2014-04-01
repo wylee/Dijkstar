@@ -1,7 +1,10 @@
-2.2 (unreleased)
+2.2 (2014-03-31)
 ----------------
 
-- Nothing changed yet.
+- Bugfix: Pass previous edge to cost & heuristic functions instead of
+  the whole predecessor tuple (node, edge, cost).
+- Add a test that passes a cost function to `find_path()`.
+- Improve package metadata.
 
 
 2.1 (2014-02-01)
