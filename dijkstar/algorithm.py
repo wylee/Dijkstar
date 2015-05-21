@@ -143,7 +143,7 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
                 # u plus cost of u to v across e), update v's cost in
                 # the cost list and update v's predecessor in the
                 # predecessor list (it's now u). Note that if ``v`` is
-                # not present in the ``costs`` list, it's current cost
+                # not present in the ``costs`` list, its current cost
                 # is considered to be infinity.
                 costs[v] = cost_of_s_to_u_plus_cost_of_e
                 predecessors[v] = (u, e, cost_of_e)
