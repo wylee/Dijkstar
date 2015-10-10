@@ -1,5 +1,9 @@
 """Dijkstra/A* path-finding functions."""
+from collections import namedtuple
 from heapq import heappush, heappop
+
+
+PathInfo = namedtuple('PathInfo', ('nodes', 'edges', 'costs', 'total_cost'))
 
 
 class DijkstarError(Exception):
@@ -164,11 +168,14 @@ def extract_shortest_path_from_predecessor_list(predecessors, d):
     ``d``
         Destination node
 
-    return
-        - The nodes on the shortest path to ``d``
-        - The edges on the shortest path to ``d``
-        - The costs of the edges on the shortest path to ``d``
-        - The total cost of the path
+    return a ``PathInfo`` object containing:
+        - nodes: The nodes on the shortest path to ``d``
+        - edges: The edges on the shortest path to ``d``
+        - costs: The costs of the edges on the shortest path to ``d``
+        - total_cost: The total cost of the path
+
+    The items in the ``PathInfo`` object can be accessed like a tuple
+    (e.g., ``info[3]``) or an object (e.g., ``info.total_cost``).
 
     """
     nodes = [d]  # Nodes on the shortest path from s to d
@@ -187,4 +194,4 @@ def extract_shortest_path_from_predecessor_list(predecessors, d):
     edges.reverse()
     costs.reverse()
     total_cost = sum(costs)
-    return nodes, edges, costs, total_cost
+    return PathInfo(nodes, edges, costs, total_cost)
