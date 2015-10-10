@@ -71,7 +71,11 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
     # reached so far. Note that "reached" is not the same as "visited".
     costs = {s: 0}
 
-    # Predecessor of each node that has been reached from s.
+    # Predecessor map for each node that has been reached from ``s``.
+    # Keys are nodes that have been reached; values are tuples of
+    # predecessor node, edge traversed to reach predecessor node, and
+    # cost to traverse the edge from the predecessor node to the reached
+    # node.
     predecessors = {s: (None, None, None)}
 
     # A priority queue of nodes with known costs from s. The nodes in
