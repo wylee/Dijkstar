@@ -31,7 +31,7 @@ class TestGraph(unittest.TestCase):
 
     def test_1_dump(self):
         self.graph.dump(self.pickle_file)
-        self.assert_(os.path.exists(self.pickle_file))
+        self.assertTrue(os.path.exists(self.pickle_file))
 
     def test_2_load(self):
         graph = Graph.load(self.pickle_file)
@@ -41,7 +41,7 @@ class TestGraph(unittest.TestCase):
 
     def test_1_marshal(self):
         self.graph.marshal(self.marshal_file)
-        self.assert_(os.path.exists(self.marshal_file))
+        self.assertTrue(os.path.exists(self.marshal_file))
 
     def test_2_unmarshal(self):
         graph = Graph.unmarshal(self.marshal_file)
