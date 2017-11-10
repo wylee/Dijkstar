@@ -76,12 +76,14 @@ class Tests(unittest.TestCase):
             'b': {'c': (1, 2, 'B'), 'd': (1, 10, 'A')},
             'c': {'b': (1, 3, 'B'), 'd': (1.5, 2, 'D')},
         }
+
         def cost_func(u, v, e, prev_e):
             cost = e[0]
             cost *= e[1]
             if prev_e is not None and e[2] != prev_e[2]:
                 cost *= 1.25
             return cost
+
         result = find_path(graph, 'a', 'd', cost_func=cost_func)
         nodes, edges, costs, total_cost = result
         self.assertEqual(nodes, ['a', 'c', 'd'])
@@ -119,7 +121,6 @@ class Tests(unittest.TestCase):
             'a': (None, None, None),
             'd': ('a', 1, 1),
             'b': ('d', 1, 1),
-            'c': ('b', 1, 1),
             'e': ('d', 1, 1),
             'f': ('e', 1, 1),
             'c': ('f', 1, 1),
