@@ -11,8 +11,8 @@ setup(
     description='Dijkstra/A*',
     long_description=long_description,
     license='MIT',
-    author='Wyatt Lee Baldwin',
-    author_email='wyatt.lee.baldwin@gmail.com',
+    author='Wyatt Baldwin',
+    author_email='self@wyattbaldwin.com',
     keywords='Dijkstra A* algorithms',
     url='https://bitbucket.org/wyatt/dijkstar',
     classifiers=[
