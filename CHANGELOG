@@ -1,7 +1,23 @@
-2.3 (unreleased)
+2.3 (2017-11-09)
 ----------------
 
-- Nothing changed yet.
+- Added incremental count to priority queue entries in
+  `algorithm.single_source_shortest_paths()`. The reason for this is
+  given in the standard library docs for the `heapq` module: "The entry
+  count serves as a tie-breaker so that two [items] with the same
+  priority are returned in the order they were added. And since no two
+  entry counts are the same, the tuple comparison will never attempt to
+  directly compare two tasks."
+
+- Updated project metaata:
+  - Changed project status from alpha to beta
+  - Updated author name & email
+  - Removed support for Python 2.6
+  - Added support for Python 3.4, 3.5, and 3.6
+
+- Added flake8 config and removed lint
+
+- Added tox config
 
 
 2.2 (2014-03-31)

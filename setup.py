@@ -7,7 +7,7 @@ with open('README') as fp:
 
 setup(
     name='Dijkstar',
-    version='2.3.dev0',
+    version='2.3.0',
     description='Dijkstra/A*',
     long_description=long_description,
     license='MIT',
