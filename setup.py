@@ -14,7 +14,7 @@ setup(
     author='Wyatt Baldwin',
     author_email='self@wyattbaldwin.com',
     keywords='Dijkstra A* algorithms',
-    url='https://bitbucket.org/wyatt/dijkstar',
+    url='https://github.com/wylee/Dijkstar',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
