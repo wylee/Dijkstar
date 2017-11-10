@@ -16,7 +16,7 @@ setup(
     keywords='Dijkstra A* algorithms',
     url='https://bitbucket.org/wyatt/dijkstar',
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
