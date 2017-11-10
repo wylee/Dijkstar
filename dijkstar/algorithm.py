@@ -1,6 +1,7 @@
 """Dijkstra/A* path-finding functions."""
 from collections import namedtuple
 from heapq import heappush, heappop
+from itertools import count
 
 
 PathInfo = namedtuple('PathInfo', ('nodes', 'edges', 'costs', 'total_cost'))
@@ -67,6 +68,8 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
         - Predecessor map {v => (u, e, cost to traverse e), ...}
 
     """
+    counter = count()
+
     # Current known costs of paths from s to all nodes that have been
     # reached so far. Note that "reached" is not the same as "visited".
     costs = {s: 0}
@@ -82,7 +85,7 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
     # this queue are candidates for visitation. Nodes are added to this
     # queue when they are reached (but only if they have not already
     # been visited).
-    visit_queue = [(0, s)]
+    visit_queue = [(0, next(counter), s)]
 
     # Nodes that have been visited. Once a node has been visited, it
     # won't be visited again. Note that in this context "visited" means
@@ -94,7 +97,7 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
         # In the nodes remaining in the graph that have a known cost
         # from s, find the node, u, that currently has the shortest path
         # from s.
-        cost_of_s_to_u, u = heappop(visit_queue)
+        cost_of_s_to_u, _, u = heappop(visit_queue)
 
         if u == d:
             break
@@ -155,7 +158,7 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
                 # is considered to be infinity.
                 costs[v] = cost_of_s_to_u_plus_cost_of_e
                 predecessors[v] = (u, e, cost_of_e)
-                heappush(visit_queue, (cost_of_s_to_u_plus_cost_of_e, v))
+                heappush(visit_queue, (cost_of_s_to_u_plus_cost_of_e, next(counter), v))
 
     if d is not None and d not in costs:
         raise NoPathError('Could not find a path from {0} to {1}'.format(s, d))
