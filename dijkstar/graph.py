@@ -90,27 +90,35 @@ class Graph(collections.MutableMapping):
         return self._incoming[v]
 
     @classmethod
-    def _load(cls, loader, path):
-        with open(path, 'rb') as loadfile:
-            neighbors = loader(loadfile)
+    def _read(cls, reader, from_):
+        """Read from path or open file using specified reader."""
+        if isinstance(from_, str):
+            with open(from_, 'rb') as fp:
+                neighbors = reader(fp)
+        else:
+            neighbors = reader(from_)
         return cls(neighbors)
 
-    def _dump(self, dumper, path):
-        with open(path, 'wb') as dumpfile:
-            dumper(self._data, dumpfile)
+    def _write(self, writer, to):
+        """Write to path or open file using specified writer."""
+        if isinstance(to, str):
+            with open(to, 'wb') as fp:
+                writer(self._data, fp)
+        else:
+            writer(self._data, to)
 
     @classmethod
-    def load(cls, path):
-        """Load pickled graph from ``path``."""
-        return cls._load(pickle.load, path)
+    def load(cls, from_):
+        """Read graph using pickle."""
+        return cls._read(pickle.load, from_)
 
-    def dump(self, path):
-        """Dump pickled graph to ``path``."""
-        self._dump(pickle.dump, path)
+    def dump(self, to):
+        """Write graph using pickle."""
+        self._write(pickle.dump, to)
 
     @classmethod
-    def unmarshal(cls, path):
-        """Read graph from disk using marshal.
+    def unmarshal(cls, from_):
+        """Read graph using marshal.
 
         Marshalling is quite a bit faster than pickling, but only the
         following types are supported: booleans, integers, long
@@ -118,18 +126,9 @@ class Graph(collections.MutableMapping):
         Unicode objects, tuples, lists, sets, frozensets, dictionaries,
         and code objects.
 
-        The method names `unmarshal` and `marshal` were chosen based on
-        this note in the standard library documentation: "Strictly
-        speaking, 'to marshal' means to convert some data from internal
-        to external form and 'unmarshalling' for the reverse process."
-
         """
-        return cls._load(marshal.load, path)
+        return cls._read(marshal.load, from_)
 
-    def marshal(self, path):
-        """Write graph to disk using marshal.
-
-        See note in :meth:`unmarshal`.
-
-        """
-        self._dump(marshal.dump, path)
+    def marshal(self, to):
+        """Write graph using marshal."""
+        self._write(marshal.dump, to)
