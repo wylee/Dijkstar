@@ -1,7 +1,8 @@
-2.4 (unreleased)
-----------------
+2.4.0 (2018-01-01)
+------------------
 
-In progress...
+- Added option of passing an open file to `Graph` read/write methods (in
+  addition to being able to pass a path name as before).
 
 
 2.3 (2017-11-09)
