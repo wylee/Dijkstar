@@ -96,10 +96,10 @@ class Tests(unittest.TestCase):
             return cost
         result = find_path(self.graph1, 1, 4, heuristic_func=heuristic)
         nodes, edges, costs, total_cost = result
-        self.assertEqual(nodes, [1, 3, 4])
-        self.assertEqual(edges, [2, 2])
+        self.assertEqual(nodes, [1, 2, 4])
+        self.assertEqual(edges, [1, 2])
         self.assertEqual(costs, edges)
-        self.assertEqual(total_cost, 4)
+        self.assertEqual(total_cost, 3)
 
     def test_find_path_2(self):
         path = find_path(self.graph2, 'a', 'i')[0]
