@@ -97,7 +97,8 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
         # In the nodes remaining in the graph that have a known cost
         # from s, find the node, u, that currently has the shortest path
         # from s.
-        cost_of_s_to_u, _, u = heappop(visit_queue)
+        __, _, u = heappop(visit_queue)
+        cost_of_s_to_u = costs[u]
 
         if u == d:
             break
@@ -139,15 +140,6 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
             # the current known cost to v.
             cost_of_s_to_u_plus_cost_of_e = cost_of_s_to_u + cost_of_e
 
-            # When there is a heuristic function, we use a
-            # "guess-timated" cost, which is the normal cost plus some
-            # other heuristic cost from v to d that is calculated so as
-            # to keep us moving in the right direction (generally more
-            # toward the goal instead of away from it).
-            if heuristic_func:
-                additional_cost = heuristic_func(u, v, e, prev_e)
-                cost_of_s_to_u_plus_cost_of_e += additional_cost
-
             if v not in costs or costs[v] > cost_of_s_to_u_plus_cost_of_e:
                 # If the current known cost from s to v is greater than
                 # the cost of the path that was just found (cost of s to
@@ -158,6 +150,15 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
                 # is considered to be infinity.
                 costs[v] = cost_of_s_to_u_plus_cost_of_e
                 predecessors[v] = (u, e, cost_of_e)
+
+                # When there is a heuristic function, we use a
+                # "guess-timated" cost, which is the normal cost plus some
+                # other heuristic cost from v to d that is calculated so as
+                # to keep us moving in the right direction (generally more
+                # toward the goal instead of away from it).
+                if heuristic_func:
+                    additional_cost = heuristic_func(u, v, e, prev_e)
+                    cost_of_s_to_u_plus_cost_of_e += additional_cost
                 heappush(visit_queue, (cost_of_s_to_u_plus_cost_of_e, next(counter), v))
 
     if d is not None and d not in costs:
