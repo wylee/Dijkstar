@@ -33,11 +33,12 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
     """Find path from node ``s`` to all other nodes or just to ``d``.
 
     ``graph``
-        A simple adjacency matrix (see :class:`dijkstra.graph.Graph`).
-        Other than the structure, no other assumptions are made about
-        the types of the nodes or edges in the graph. As a simple
-        special case, if ``cost_func`` isn't specified, edges will be
-        assumed to be simple numeric values.
+        An adjacency list that's structured as a dict of dicts (see
+        :class:`dijkstra.graph.Graph`). Other than the structure, no
+        other assumptions are made about the types of the nodes or edges
+        in the graph. If ``cost_func`` isn't specified, edges will be
+        assumed to be values that can be compared directly (e.g.,
+        numbers, or any other comparable type).
 
     ``s``
         Start node.
@@ -49,7 +50,7 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
         a path to ``d`` has been found.
 
     ``annex``
-        Another ``graph`` that can be used to augment ``graph`` without
+        Another graph that can be used to augment ``graph`` without
         altering it.
 
     ``cost_func``
@@ -60,10 +61,9 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
         reach the current node.
 
     ``heuristic_func``
-        A function to apply at each iteration to help the poor dumb
-        machine try to move toward the destination instead of just any
-        and every which way. It gets passed the same args as
-        ``cost_func``.
+        A function to apply at each iteration to guide the algorithm
+        toward the destination (typically) instead of fanning out. It
+        gets passed the same args as ``cost_func``.
 
     ``debug``
         If set, return additional info that may be useful for debugging.
