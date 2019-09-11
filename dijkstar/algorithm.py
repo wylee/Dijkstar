@@ -5,6 +5,7 @@ from itertools import count
 
 
 PathInfo = namedtuple('PathInfo', ('nodes', 'edges', 'costs', 'total_cost'))
+DebugInfo = namedtuple('DebugInfo', 'costs visited')
 
 
 class DijkstarError(Exception):
@@ -28,7 +29,7 @@ def find_path(graph, s, d, annex=None, cost_func=None, heuristic_func=None):
 
 
 def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
-                                 heuristic_func=None):
+                                 heuristic_func=None, debug=False):
     """Find path from node ``s`` to all other nodes or just to ``d``.
 
     ``graph``
@@ -64,8 +65,17 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
         and every which way. It gets passed the same args as
         ``cost_func``.
 
+    ``debug``
+        If set, return additional info that may be useful for debugging.
+
     return
-        - Predecessor map {v => (u, e, cost to traverse e), ...}
+        A predecessor map with the following form::
+
+            {v => (u, e, cost from v to u over e), ...}
+
+        If ``debug`` is set, additional debugging info will be returned
+        also. Currently, this info includes costs from ``s`` to reached
+        nodes and the set of visited nodes.
 
     """
     counter = count()
@@ -162,6 +172,9 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
 
     if d is not None and d not in costs:
         raise NoPathError('Could not find a path from {0} to {1}'.format(s, d))
+
+    if debug:
+        return predecessors, DebugInfo(costs, visited)
 
     return predecessors
 
