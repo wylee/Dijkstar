@@ -1,6 +1,7 @@
 """Dijkstra/A* path-finding functions."""
 from collections import namedtuple
 from heapq import heappush, heappop
+from inspect import ismethod
 from itertools import count
 
 
@@ -78,6 +79,13 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
         nodes and the set of visited nodes.
 
     """
+    # Operate on the underlying data dict to potentially improve
+    # performance.
+    if ismethod(getattr(graph, 'get_data', None)):
+        graph = graph.get_data()
+    if ismethod(getattr(annex, 'get_data', None)):
+        annex = annex.get_data()
+
     counter = count()
 
     # Current known costs of paths from s to all nodes that have been
