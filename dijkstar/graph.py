@@ -67,6 +67,10 @@ class Graph(collections.MutableMapping):
     def __len__(self):
         return len(self._data)
 
+    def get_data(self):
+        """Return the underlying data dict."""
+        return self._data
+
     def add_edge(self, u, v, edge=None):
         """Add an ``edge`` from ``u`` to ``v``."""
         if u in self:
