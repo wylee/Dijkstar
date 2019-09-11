@@ -1,7 +1,9 @@
+import math
 import unittest
 
 from dijkstar import find_path, NoPathError, Graph
-from dijkstar.algorithm import single_source_shortest_paths
+from dijkstar.algorithm import (
+    extract_shortest_path_from_predecessor_list, single_source_shortest_paths)
 
 
 class Tests(unittest.TestCase):
@@ -26,6 +28,23 @@ class Tests(unittest.TestCase):
             'h': {'e': 1, 'g': 2, 'i': 3},
             'i': {'f': 1, 'h': 2}
         })
+
+        # 100 x 100 grid
+        grid = Graph()
+        grid_range_end = 101
+        for i in range(1, grid_range_end):
+            for j in range(1, grid_range_end):
+                neighbors = {}
+                if j - 1 > 0:
+                    neighbors[(i, j - 1)] = 1
+                if i - 1 > 0:
+                    neighbors[(i - 1, j)] = 1
+                if i + 1 < grid_range_end:
+                    neighbors[(i + 1, j)] = 1
+                if j + 1 < grid_range_end:
+                    neighbors[(i, j + 1)] = 1
+                grid[(i, j)] = neighbors
+        self.grid = grid
 
     @property
     def graph3(self):
@@ -90,16 +109,31 @@ class Tests(unittest.TestCase):
 
     def test_find_path_with_heuristic(self):
         def heuristic(u, v, e, prev_e):
-            cost = u + 1 if v == 2 else 0
-            if e != prev_e:
-                cost += 1
+            # Straight line distance between current `u` and `d`
+            x1, y1 = u
+            x2, y2 = d
+            cost = math.sqrt(((x2 - x1) ** 2) + ((y2 - y1) ** 2))
             return cost
-        result = find_path(self.graph1, 1, 4, heuristic_func=heuristic)
+
+        s = (41, 41)
+        d = (45, 43)
+
+        no_heuristic_predecessors, no_heuristic_info = single_source_shortest_paths(
+            self.grid, s, d, debug=True)
+        predecessors, heuristic_info = single_source_shortest_paths(
+            self.grid, s, d, heuristic_func=heuristic, debug=True)
+
+        # A smoke test to show the heuristic causes less fanning out
+        # than when the heuristic isn't used.
+        self.assertTrue(len(heuristic_info.visited) < len(no_heuristic_info.visited))
+
+        result = extract_shortest_path_from_predecessor_list(predecessors, d)
         nodes, edges, costs, total_cost = result
-        self.assertEqual(nodes, [1, 3, 4])
-        self.assertEqual(edges, [2, 2])
-        self.assertEqual(costs, edges)
-        self.assertEqual(total_cost, 4)
+
+        self.assertEqual(nodes[0], s)
+        self.assertEqual(nodes[-1], d)
+        self.assertEqual(edges, costs)
+        self.assertEqual(total_cost, 6)
 
     def test_find_path_2(self):
         path = find_path(self.graph2, 'a', 'i')[0]
