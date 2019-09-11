@@ -29,15 +29,27 @@ class TestGraph(unittest.TestCase):
         os.remove(cls.pickle_file)
         os.remove(cls.marshal_file)
 
+    def _check_graph(self, graph):
+        self.assertEqual(graph, self.graph)
+        self.assertEqual(graph._data, self.graph._data)
+        self.assertEqual(graph._incoming, self.graph._incoming)
+
     def test_1_dump(self):
         self.graph.dump(self.pickle_file)
         self.assertTrue(os.path.exists(self.pickle_file))
 
     def test_2_load(self):
         graph = Graph.load(self.pickle_file)
-        self.assertEqual(graph, self.graph)
-        self.assertEqual(graph._data, self.graph._data)
-        self.assertEqual(graph._incoming, self.graph._incoming)
+        self._check_graph(graph)
+
+    def test_3_dump_to_open_file(self):
+        with open(self.pickle_file, 'wb') as fp:
+            self.graph.dump(fp)
+
+    def test_4_load_from_open_file(self):
+        with open(self.pickle_file, 'rb') as fp:
+            graph = self.graph.load(fp)
+        self._check_graph(graph)
 
     def test_1_marshal(self):
         self.graph.marshal(self.marshal_file)
@@ -45,6 +57,4 @@ class TestGraph(unittest.TestCase):
 
     def test_2_unmarshal(self):
         graph = Graph.unmarshal(self.marshal_file)
-        self.assertEqual(graph, self.graph)
-        self.assertEqual(graph._data, self.graph._data)
-        self.assertEqual(graph._incoming, self.graph._incoming)
+        self._check_graph(graph)
