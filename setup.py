@@ -15,6 +15,13 @@ setup(
     author_email='self@wyattbaldwin.com',
     keywords='Dijkstra A* algorithms',
     url='https://github.com/wylee/Dijkstar',
+    extras_require={
+        'dev': [
+            'coverage',
+            'flake8',
+            'tox',
+        ],
+    },
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
