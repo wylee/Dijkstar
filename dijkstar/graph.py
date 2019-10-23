@@ -65,7 +65,7 @@ class Graph(collections.MutableMapping):
         return iter(self._data)
 
     def __len__(self):
-        return len(self._data)
+        return self.node_count
 
     def get_data(self):
         """Return the underlying data dict."""
@@ -80,6 +80,10 @@ class Graph(collections.MutableMapping):
         else:
             self[u] = {v: edge}
 
+    @property
+    def edge_count(self):
+        return sum(len(neighbors) for neighbors in self._data.values())
+
     def add_node(self, u, neighbors=None):
         """Add the node ``u``.
 
@@ -89,6 +93,10 @@ class Graph(collections.MutableMapping):
 
         """
         self[u] = neighbors if neighbors is not None else {}
+
+    @property
+    def node_count(self):
+        return len(self._data)
 
     def get_incoming(self, v):
         return self._incoming[v]
