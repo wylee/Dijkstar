@@ -83,3 +83,87 @@ And read back like this (load is a classmethod that returns a populated
 Graph instance):
 
     >>> Graph.load(path)
+
+## Server
+
+Dijkstar comes with a simple, standalone, web-based graph server that's
+built on top of [Starlette](https://www.starlette.io/) and
+[Uvicorn](https://www.uvicorn.org/). It can be installed with pip:
+
+    pip install Dijkstar[server]
+
+This installs additional libraries as well as the `dijkstar serve`
+console script. The server can be run like so:
+
+    dijkstar serve
+
+This runs `uvicorn` on `127.0.0.1:8000` with an empty graph.
+
+A previously-saved graph can be loaded from disk like so:
+
+    dijkstar serve -g path/to/graph
+
+### Server Configuration
+
+The server is configured via environment variables following the same
+[12-factor pattern as Starlette](https://www.starlette.io/config/).
+These can be set in the following ways, in order of precedence:
+
+- Options passed to `dijkstar serve`, which will overwrite existing
+  environment variables.
+- Environment variables set in the usual way (e.g., via the shell).
+- Variables set in an env file, which will be added to the environment
+  if not already present. The default env file is `./.env` (relative
+  to the server's PWD).
+
+The environment variables affecting the server correspond to the
+settings in the `dijkstar.server.conf` module (with names upper-cased).
+
+TODO: Document environment variables here.
+
+
+### Road Map/Planned Features
+
+- [x] Console script to run server
+- [x] Configuration via env file
+- [x] Configuration console script options
+- [x] Load graph from file on startup
+- [ ] Endpoints
+  - [ ] HTML home page listing available endpoints
+  - [x] /graph-info -> Basic graph info
+  - [ ] /add-edge -> Add edge to graph
+  - [ ] /add-node -> Add nod to graph
+  - [ ] /find-path -> Find path between nodes in graph
+- [ ] Client wrapping server API calls
+  - [x] Graph info
+  - [ ] Add edge
+  - [ ] Add node
+  - [ ] Find path
+- [] Auth?
+
+### Clients
+
+Any HTTP client can be used to make requests to the server, such as
+`fetch` in the browser or `curl` on the command line. For example,
+`fetch` can be used to interact with a graph directly from a web app:
+
+    const response = await fetch('http://localhost:8000/graph-info')
+    const info = await response.json();
+
+Dijkstar also includes a client that can be used to make requests
+conveniently from Python code:
+
+    from dijkstar.server.client import Client
+    client = Client()  # Uses the default base URL http://localhost:8000
+    info = client.graph_info()
+
+This is intended for use in scripts, back end web services, and the
+like. Here's an example of using the client in a Django-style view:
+
+    def find_path_view(request):
+        path = client.find_path(1, 2)
+        # Process the path. For example, you might retrieve edges from
+        # the database here.
+        edges = Edge.objects.filter(id__in=path['edges'])
+        edges = [{'id': edge.id, 'name': edge.name} for edge in edges]
+        return JsonResponse(edges)

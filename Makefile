@@ -5,7 +5,7 @@ $(venv):
 	$(venv)/bin/pip install --upgrade pip setuptools
 
 init: $(venv)
-	$(venv)/bin/pip install -e .[dev]
+	$(venv)/bin/pip install -e .[dev,server]
 
 test:
 	$(venv)/bin/coverage run --source dijkstar -m unittest discover .

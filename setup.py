@@ -26,6 +26,18 @@ setup(
             'runcommands',
             'tox',
         ],
+        'client': [
+            'python-multipart>=0.0.5',
+            'requests>=2.22.0',
+        ],
+        'server': [
+            'jinja2>=2.10.3',
+            'python-multipart>=0.0.5',
+            'pyyaml>=5.1.2',
+            'requests>=2.22.0',
+            'starlette>=0.12.13',
+            'uvicorn>=0.10.8',
+        ],
     },
     entry_points={
         'console_scripts': {

@@ -30,3 +30,13 @@ class TestConsoleScript(unittest.TestCase):
         except SystemExit as exc:
             self.assertEqual(exc.code, 0)
         self.assertTrue(self.stdout_val.startswith(f'Dijkstar {__version__}\n\nusage: dijkstar'))
+
+    def test_run_serve_command(self):
+        self.call_with_redirected_stdout(main, ['serve'])
+
+    def test_run_serve_with_help_flag(self):
+        try:
+            self.call_with_redirected_stdout(main, ['serve', '-h'])
+        except SystemExit as exc:
+            self.assertEqual(exc.code, 0)
+        self.assertTrue(self.stdout_val.startswith('usage: dijkstar serve'))
