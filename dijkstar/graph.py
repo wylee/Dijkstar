@@ -79,6 +79,7 @@ class Graph(collections.MutableMapping):
             self._incoming[v][u] = edge
         else:
             self[u] = {v: edge}
+        return edge
 
     @property
     def edge_count(self):
@@ -93,6 +94,7 @@ class Graph(collections.MutableMapping):
 
         """
         self[u] = neighbors if neighbors is not None else {}
+        return self[u]
 
     @property
     def node_count(self):
