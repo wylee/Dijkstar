@@ -6,6 +6,30 @@ from itertools import count
 
 
 PathInfo = namedtuple('PathInfo', ('nodes', 'edges', 'costs', 'total_cost'))
+"""Info for shortest path found between start and destination nodes.
+
+``nodes``
+    Nodes comprising the shortest path.
+
+``edges``
+    Edges comprising the shortest path.
+
+``costs``
+    Cost to traverse each edge in ``edges``. When a cost function is
+    passed to :func:`find_path`, these will be *computed* costs, which
+    may or not correspond to any real world value such as edge length
+    (depends on the cost function and how it computes costs). When a
+    cost function isn't passed, this will be equal to ``edges``.
+
+``total_cost``
+    This is simply the sum of ``costs``. When a cost function is passed
+    to :func:`find_path`, this will be the sum of the *computed* costs,
+    which may not correspond to any real world value. When a cost
+    function isn't used, this will be equal to ``sum(edges)``.
+
+"""
+
+
 DebugInfo = namedtuple('DebugInfo', 'costs visited')
 
 
@@ -20,8 +44,8 @@ class NoPathError(DijkstarError):
 def find_path(graph, s, d, annex=None, cost_func=None, heuristic_func=None):
     """Find the shortest path from ``s`` to ``d`` in ``graph``.
 
-    Returns ordered path data. For details, see
-    :func:`extract_shortest_path_from_predecessor_list`.
+    Returns
+        A :class:`PathInfo` object.
 
     """
     predecessors = single_source_shortest_paths(
@@ -196,14 +220,8 @@ def extract_shortest_path_from_predecessor_list(predecessors, d):
     ``d``
         Destination node
 
-    return a ``PathInfo`` object containing:
-        - nodes: The nodes on the shortest path to ``d``
-        - edges: The edges on the shortest path to ``d``
-        - costs: The costs of the edges on the shortest path to ``d``
-        - total_cost: The total cost of the path
-
-    The items in the ``PathInfo`` object can be accessed like a tuple
-    (e.g., ``info[3]``) or an object (e.g., ``info.total_cost``).
+    Returns
+        A :class:`PathInfo` object.
 
     """
     nodes = [d]  # Nodes on the shortest path from s to d
