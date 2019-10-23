@@ -1,4 +1,4 @@
-from distutils.core import setup
+from setuptools import find_packages, setup
 
 
 with open('README.rst') as fp:
@@ -15,6 +15,7 @@ setup(
     author_email='self@wyattbaldwin.com',
     keywords='Dijkstra A* algorithms',
     url='https://github.com/wylee/Dijkstar',
+    packages=find_packages(),
     extras_require={
         'dev': [
             'coverage',
@@ -37,5 +38,4 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
     ],
-    packages=['dijkstar']
 )
