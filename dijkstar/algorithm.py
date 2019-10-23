@@ -44,6 +44,10 @@ class NoPathError(DijkstarError):
 def find_path(graph, s, d, annex=None, cost_func=None, heuristic_func=None):
     """Find the shortest path from ``s`` to ``d`` in ``graph``.
 
+    This is a wrapper around :func:`single_source_shortest_paths` that
+    extracts path info from the the predecessor list. Look there for a
+    description of the args.
+
     Returns
         A :class:`PathInfo` object.
 
