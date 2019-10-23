@@ -97,7 +97,7 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
     ``debug``
         If set, return additional info that may be useful for debugging.
 
-    return
+    Returns
         A predecessor map with the following form::
 
             {v => (u, e, cost from v to u over e), ...}
