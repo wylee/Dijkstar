@@ -27,6 +27,11 @@ setup(
             'tox',
         ],
     },
+    entry_points={
+        'console_scripts': {
+            'dijkstar=dijkstar.__main__:main',
+        },
+    },
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
