@@ -30,27 +30,7 @@ class Graph(collections.MutableMapping):
         return self.get_node(u)
 
     def __setitem__(self, u, neighbors):
-        """Set neighbors for node ``u``.
-
-        This completely replaces ``u``'s current neighbors if ``u`` is
-        already present.
-
-        Also clears ``u``'s incoming list and updates the incoming list
-        for each of the nodes in ``neighbors`` to include ``u``.
-
-        To add an edge to an existing node, use :meth:`add_edge`
-        instead.
-
-        ``neighbors``
-            A mapping of the nodes adjacent to ``u`` and the edges that
-            connect ``u`` to those nodes: {v1: e1, v2: e2, ...}.
-
-        """
-        if u in self:
-            del self[u]
-        self._data[u] = neighbors
-        for v, edge in neighbors.items():
-            self._incoming[v][u] = edge
+        self.add_node(u, neighbors)
 
     def __delitem__(self, u):
         self.remove_node(u)
@@ -80,15 +60,15 @@ class Graph(collections.MutableMapping):
         return sum(len(neighbors) for neighbors in self._data.values())
 
     def add_node(self, u, neighbors=None):
-        """Add the node ``u``.
-
-        This simply delegates to :meth:`__setitem__`. The only
-        difference between this and that is that ``neighbors`` isn't
-        required when calling this.
-
-        """
-        self[u] = neighbors if neighbors is not None else {}
-        return self[u]
+        """Add node ``u`` and, optionally, its ``neighbors``."""
+        if neighbors is None:
+            neighbors = {}
+        if u in self._data:
+            del self[u]
+        self._data[u] = neighbors
+        for v, edge in neighbors.items():
+            self._incoming[v][u] = edge
+        return self._data[u]
 
     def get_node(self, u):
         """Get node ``u``."""
