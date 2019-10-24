@@ -18,10 +18,20 @@ class Graph(collections.MutableMapping):
     Edges can be of any type. Nodes have to be hashable since they're
     used as dictionary keys. ``None`` should *not* be used as a node.
 
+    Graphs are *directed* by default. To create an undirected graph, use
+    the ``undirected`` flag:
+
+        >>> graph = Graph(undirected=True)
+
+    Note that all this does is automatically add the edge ``(v, u)``
+    when ``(u, v)`` is added. In addition, when a node is deleted, its
+    incoming nodes will be deleted also.
+
     """
 
-    def __init__(self, data=None):
+    def __init__(self, data=None, undirected=False):
         self._data = {}
+        self._undirected = undirected
         self._incoming = collections.defaultdict(dict)
         if data is not None:
             self.update(data)
@@ -51,13 +61,31 @@ class Graph(collections.MutableMapping):
         return self._data
 
     def add_edge(self, u, v, edge=None):
-        """Add an ``edge`` from ``u`` to ``v``."""
-        if u in self:
-            neighbors = self[u]
+        """Add an ``edge`` from ``u`` to ``v``.
+
+        If the graph is undirected, the ``edge`` will be added from
+        ``v`` to ``u`` also.
+
+        """
+        data = self._data
+        incoming = self._incoming
+        undirected = self._undirected
+
+        if u in data:
+            neighbors = data[u]
             neighbors[v] = edge
         else:
-            self[u] = {v: edge}
-        self._incoming[v][u] = edge
+            data[u] = {v: edge}
+        incoming[v][u] = edge
+
+        if undirected:
+            if v in data:
+                neighbors = data[v]
+                neighbors[u] = edge
+            else:
+                data[v] = {u: edge}
+            incoming[u][v] = edge
+
         return edge
 
     def get_edge(self, u, v):
@@ -80,18 +108,58 @@ class Graph(collections.MutableMapping):
 
     @property
     def edge_count(self):
-        return sum(len(neighbors) for neighbors in self._data.values())
+        count = sum(len(neighbors) for neighbors in self._data.values())
+        if self._undirected:
+            assert count % 2 == 0
+            count = count // 2
+        return count
 
     def add_node(self, u, neighbors=None):
-        """Add node ``u`` and, optionally, its ``neighbors``."""
+        """Add node ``u`` and, optionally, its ``neighbors``.
+
+        Adds or updates the node ``u``. If ``u`` isn't already in the
+        graph, it will be created with the specified ``neighbors``. If
+        it is, it will be updated with the specified ``neighbors``.
+
+        Note that if ``u`` is already in the graph, only its existing
+        neighbors that are *also* specified in ``neighbors`` will be
+        affected; other neighbors will be left as is. To clear a node
+        completely, use ``del graph[u]``.
+
+        ``neighbors``
+            An optional dict of neighbors like ``{v1: e1, v2: e2, ...}``.
+
+        """
+        data = self._data
+        incoming = self._incoming
+        undirected = self._undirected
+        directed = not undirected
+
         if neighbors is None:
             neighbors = {}
-        if u in self._data:
-            del self[u]
-        self._data[u] = neighbors
-        for v, edge in neighbors.items():
-            self._incoming[v][u] = edge
-        return self._data[u]
+
+        if directed or u not in data:
+            # For a directed graph, add u if it's not present or replace
+            # it completely if is.
+            #
+            # For an undirected graph, add u if it's not present. If it
+            # is, add new neighbors and update existing neighbors, but
+            # leave other neighbors alone.
+            data[u] = {}
+
+        node_data = data[u]
+
+        for v, e in neighbors.items():
+            node_data[v] = e
+            incoming[v][u] = e
+            if undirected:
+                if v not in data:
+                    data[v] = {u: e}
+                else:
+                    data[v][u] = e
+                incoming[u][v] = e
+
+        return node_data
 
     def get_node(self, u):
         """Get node ``u``."""

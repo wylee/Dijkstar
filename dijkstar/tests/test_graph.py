@@ -57,3 +57,89 @@ class TestGraph(unittest.TestCase):
     def test_2_unmarshal(self):
         graph = Graph.unmarshal(self.marshal_file)
         self._check_graph(graph)
+
+
+class TestUndirectedGraph(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        # Create by adding edges
+        graph1 = Graph(undirected=True)
+        graph1.add_edge(1, 2)
+        graph1.add_edge(1, 3)
+        graph1.add_edge(2, 4)
+        graph1.add_edge(3, 4)
+        cls.graph1 = graph1
+
+        # Create by adding nodes with neighbors
+        graph2 = Graph(undirected=True)
+        graph2.add_node(1, {2: None, 3: None})
+        graph2.add_node(2, {4: None})
+        graph2.add_node(3, {4: None})
+        cls.graph2 = graph2
+
+        # Create with initial data (nodes & neighbors)
+        graph3 = Graph({
+            1: {2: None, 3: None},
+            2: {4: None},
+            3: {4: None},
+        }, undirected=True)
+        cls.graph3 = graph3
+
+    def test_edge_count(self):
+        self.assertEqual(self.graph1.edge_count, 4)
+        self.assertEqual(self.graph2.edge_count, 4)
+        self.assertEqual(self.graph3.edge_count, 4)
+
+    def test_node_count(self):
+        self.assertEqual(self.graph1.node_count, 4)
+        self.assertEqual(self.graph2.node_count, 4)
+        self.assertEqual(self.graph3.node_count, 4)
+
+    def test_add_edge_vs_add_node(self):
+        self.assertEqual(self.graph1, self.graph3)
+
+    def test_add_edge_vs_initial_data(self):
+        self.assertEqual(self.graph1, self.graph3)
+
+    def test_delete_node(self):
+        graph = Graph(undirected=True)
+        graph.add_edge(1, 2)
+        graph.add_edge(1, 3)
+        graph.add_edge(2, 4)
+        graph.add_edge(3, 4)
+        self.assertEqual(graph.edge_count, 4)
+        self.assertEqual(graph.node_count, 4)
+        self.assertEqual(graph, {
+            1: {2: None, 3: None},
+            2: {1: None, 4: None},
+            3: {1: None, 4: None},
+            4: {2: None, 3: None},
+        })
+        self.assertEqual(graph._incoming, {
+            1: {2: None, 3: None},
+            2: {1: None, 4: None},
+            3: {1: None, 4: None},
+            4: {2: None, 3: None},
+        })
+        del graph[1]
+        self.assertEqual(graph.edge_count, 2)
+        self.assertEqual(graph.node_count, 3)
+        self.assertEqual(graph, {
+            2: {4: None},
+            3: {4: None},
+            4: {2: None, 3: None},
+        })
+        self.assertEqual(graph._incoming, {
+            2: {4: None},
+            3: {4: None},
+            4: {2: None, 3: None},
+        })
+        del graph[4]
+        self.assertEqual(graph.edge_count, 0)
+        self.assertEqual(graph.node_count, 2)
+        self.assertEqual(graph, {
+            2: {},
+            3: {},
+        })
+        self.assertEqual(graph._incoming, {})
