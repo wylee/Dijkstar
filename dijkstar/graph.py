@@ -65,9 +65,13 @@ class Graph(collections.MutableMapping):
         incoming = self._incoming
         del data[u][v]
         del incoming[v][u]
+        if not incoming[v]:
+            del incoming[v]
         if u in data[v]:
             del data[v][u]
             del incoming[u][v]
+            if not incoming[u]:
+                del incoming[u]
 
     @property
     def edge_count(self):
@@ -104,6 +108,8 @@ class Graph(collections.MutableMapping):
             del data[v][u]
         for v in neighbors:
             del incoming[v][u]
+            if not incoming[v]:
+                del incoming[v]
 
         del data[u]
         del incoming[u]
