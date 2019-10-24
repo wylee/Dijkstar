@@ -27,8 +27,7 @@ class Graph(collections.MutableMapping):
             self.update(data)
 
     def __getitem__(self, u):
-        """Get neighbors of node ``u``."""
-        return self._data[u]
+        return self.get_node(u)
 
     def __setitem__(self, u, neighbors):
         """Set neighbors for node ``u``.
@@ -95,6 +94,10 @@ class Graph(collections.MutableMapping):
         """
         self[u] = neighbors if neighbors is not None else {}
         return self[u]
+
+    def get_node(self, u):
+        """Get node ``u``."""
+        return self._data[u]
 
     @property
     def node_count(self):
