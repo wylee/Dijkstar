@@ -50,9 +50,9 @@ class Graph(collections.MutableMapping):
         if u in self:
             neighbors = self[u]
             neighbors[v] = edge
-            self._incoming[v][u] = edge
         else:
             self[u] = {v: edge}
+        self._incoming[v][u] = edge
         return edge
 
     def get_edge(self, u, v):
