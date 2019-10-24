@@ -59,6 +59,16 @@ class Graph(collections.MutableMapping):
         """Get edge ``(u, v)``."""
         return self._data[u][v]
 
+    def remove_edge(self, u, v):
+        """Remove edge ``(u, v)``."""
+        data = self._data
+        incoming = self._incoming
+        del data[u][v]
+        del incoming[v][u]
+        if u in data[v]:
+            del data[v][u]
+            del incoming[u][v]
+
     @property
     def edge_count(self):
         return sum(len(neighbors) for neighbors in self._data.values())
