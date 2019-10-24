@@ -55,6 +55,10 @@ class Graph(collections.MutableMapping):
             self[u] = {v: edge}
         return edge
 
+    def get_edge(self, u, v):
+        """Get edge ``(u, v)``."""
+        return self._data[u][v]
+
     @property
     def edge_count(self):
         return sum(len(neighbors) for neighbors in self._data.values())
