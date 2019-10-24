@@ -33,7 +33,6 @@ class TestGraph(unittest.TestCase):
 
     def _check_graph(self, graph):
         self.assertEqual(graph, self.graph)
-        self.assertEqual(graph._incoming, self.graph._incoming)
 
     def test_subgraph(self):
         subgraph = self.graph.subgraph((1, 2))
@@ -93,16 +92,16 @@ class TestDirectedGraph(unittest.TestCase):
 
         # Create by adding nodes with neighbors
         graph2 = Graph()
-        graph2.add_node(1, {2: (), 3: ()})
-        graph2.add_node(2, {4: ()})
-        graph2.add_node(3, {4: ()})
+        graph2.add_node(1, {2: None, 3: None})
+        graph2.add_node(2, {4: None})
+        graph2.add_node(3, {4: None})
         cls.graph2 = graph2
 
         # Create with initial data (nodes & neighbors)
         graph3 = Graph({
-            1: {2: (), 3: ()},
-            2: {4: ()},
-            3: {4: ()},
+            1: {2: None, 3: None},
+            2: {4: None},
+            3: {4: None},
         })
         cls.graph3 = graph3
 
@@ -131,26 +130,18 @@ class TestDirectedGraph(unittest.TestCase):
         self.assertEqual(graph.edge_count, 4)
         self.assertEqual(graph.node_count, 4)
         self.assertEqual(graph, {
-            1: {2: (), 3: ()},
-            2: {4: ()},
-            3: {4: ()},
+            1: {2: None, 3: None},
+            2: {4: None},
+            3: {4: None},
             4: {},
-        })
-        self.assertEqual(graph._incoming, {
-            2: {1: ()},
-            3: {1: ()},
-            4: {2: (), 3: ()},
         })
         del graph[1]
         self.assertEqual(graph.edge_count, 2)
         self.assertEqual(graph.node_count, 3)
         self.assertEqual(graph, {
-            2: {4: ()},
-            3: {4: ()},
+            2: {4: None},
+            3: {4: None},
             4: {},
-        })
-        self.assertEqual(graph._incoming, {
-            4: {2: (), 3: ()},
         })
         del graph[4]
         self.assertEqual(graph.edge_count, 0)
@@ -159,7 +150,6 @@ class TestDirectedGraph(unittest.TestCase):
             2: {},
             3: {},
         })
-        self.assertEqual(graph._incoming, {})
 
     def test_remove_edge(self):
         graph = Graph()
@@ -170,28 +160,19 @@ class TestDirectedGraph(unittest.TestCase):
         self.assertEqual(graph.edge_count, 4)
         self.assertEqual(graph.node_count, 4)
         self.assertEqual(graph, {
-            1: {2: (), 3: ()},
-            2: {4: ()},
-            3: {4: ()},
+            1: {2: None, 3: None},
+            2: {4: None},
+            3: {4: None},
             4: {},
-        })
-        self.assertEqual(graph._incoming, {
-            2: {1: ()},
-            3: {1: ()},
-            4: {2: (), 3: ()},
         })
         graph.remove_edge(1, 2)
         self.assertEqual(graph.edge_count, 3)
         self.assertEqual(graph.node_count, 4)
         self.assertEqual(graph, {
-            1: {3: ()},
-            2: {4: ()},
-            3: {4: ()},
+            1: {3: None},
+            2: {4: None},
+            3: {4: None},
             4: {},
-        })
-        self.assertEqual(graph._incoming, {
-            3: {1: ()},
-            4: {2: (), 3: ()},
         })
 
 
@@ -252,21 +233,10 @@ class TestUndirectedGraph(unittest.TestCase):
             3: {1: None, 4: None},
             4: {2: None, 3: None},
         })
-        self.assertEqual(graph._incoming, {
-            1: {2: None, 3: None},
-            2: {1: None, 4: None},
-            3: {1: None, 4: None},
-            4: {2: None, 3: None},
-        })
         del graph[1]
         self.assertEqual(graph.edge_count, 2)
         self.assertEqual(graph.node_count, 3)
         self.assertEqual(graph, {
-            2: {4: None},
-            3: {4: None},
-            4: {2: None, 3: None},
-        })
-        self.assertEqual(graph._incoming, {
             2: {4: None},
             3: {4: None},
             4: {2: None, 3: None},
@@ -278,7 +248,6 @@ class TestUndirectedGraph(unittest.TestCase):
             2: {},
             3: {},
         })
-        self.assertEqual(graph._incoming, {})
 
     def test_remove_edge(self):
         graph = Graph(undirected=True)
@@ -289,30 +258,17 @@ class TestUndirectedGraph(unittest.TestCase):
         self.assertEqual(graph.edge_count, 4)
         self.assertEqual(graph.node_count, 4)
         self.assertEqual(graph, {
-            1: {2: (), 3: ()},
-            2: {1: (), 4: ()},
-            3: {1: (), 4: ()},
-            4: {2: (), 3: ()},
-        })
-        self.assertEqual(graph._incoming, {
-            1: {2: (), 3: ()},
-            2: {1: (), 4: ()},
-            3: {1: (), 4: ()},
-            4: {2: (), 3: ()},
+            1: {2: None, 3: None},
+            2: {1: None, 4: None},
+            3: {1: None, 4: None},
+            4: {2: None, 3: None},
         })
         graph.remove_edge(1, 2)
         self.assertEqual(graph.edge_count, 3)
         self.assertEqual(graph.node_count, 4)
         self.assertEqual(graph, {
-            1: {3: ()},
-            2: {4: ()},
-            3: {1: (), 4: ()},
-            4: {2: (), 3: ()},
+            1: {3: None},
+            2: {4: None},
+            3: {1: None, 4: None},
+            4: {2: None, 3: None},
         })
-        self.assertEqual(graph._incoming, {
-            1: {3: ()},
-            2: {4: ()},
-            3: {1: (), 4: ()},
-            4: {2: (), 3: ()},
-        })
-

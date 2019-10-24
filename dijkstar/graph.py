@@ -34,7 +34,6 @@ class Graph(collections.MutableMapping):
     def __init__(self, data=None, undirected=False):
         self._data = {}
         self._undirected = undirected
-        self._incoming = collections.defaultdict(dict)
         if data is not None:
             self.update(data)
 
@@ -94,7 +93,6 @@ class Graph(collections.MutableMapping):
 
         """
         data = self._data
-        incoming = self._incoming
         undirected = self._undirected
 
         if u in data:
@@ -102,7 +100,6 @@ class Graph(collections.MutableMapping):
             neighbors[v] = edge
         else:
             data[u] = {v: edge}
-        incoming[v][u] = edge
 
         if undirected:
             if v in data:
@@ -110,7 +107,6 @@ class Graph(collections.MutableMapping):
                 neighbors[u] = edge
             else:
                 data[v] = {u: edge}
-            incoming[u][v] = edge
         elif v not in data:
             data[v] = {}
 
@@ -123,16 +119,9 @@ class Graph(collections.MutableMapping):
     def remove_edge(self, u, v):
         """Remove edge ``(u, v)``."""
         data = self._data
-        incoming = self._incoming
         del data[u][v]
-        del incoming[v][u]
-        if not incoming[v]:
-            del incoming[v]
         if u in data[v]:
             del data[v][u]
-            del incoming[u][v]
-            if not incoming[u]:
-                del incoming[u]
 
     @property
     def edge_count(self):
@@ -159,7 +148,6 @@ class Graph(collections.MutableMapping):
 
         """
         data = self._data
-        incoming = self._incoming
         undirected = self._undirected
         directed = not undirected
 
@@ -179,13 +167,11 @@ class Graph(collections.MutableMapping):
 
         for v, e in neighbors.items():
             node_data[v] = e
-            incoming[v][u] = e
             if undirected:
                 if v not in data:
                     data[v] = {u: e}
                 else:
                     data[v][u] = e
-                incoming[u][v] = e
             elif v not in data:
                 data[v] = {}
 
@@ -204,25 +190,23 @@ class Graph(collections.MutableMapping):
 
         """
         data = self._data
-        incoming = self._incoming
+        undirected = self._undirected
         neighbors = data[u]
 
-        for v in incoming[u]:
-            del data[v][u]
-        for v in neighbors:
-            del incoming[v][u]
-            if not incoming[v]:
-                del incoming[v]
+        if undirected:
+            for v in neighbors:
+                del data[v][u]
+        else:
+            # Remove edges from all other nodes to the removed node.
+            for neighbors in data.values():
+                if u in neighbors:
+                    del neighbors[u]
 
         del data[u]
-        del incoming[u]
 
     @property
     def node_count(self):
         return len(self._data)
-
-    def get_incoming(self, v):
-        return self._incoming[v]
 
     @classmethod
     def _read(cls, reader, from_):

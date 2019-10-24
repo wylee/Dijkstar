@@ -61,10 +61,6 @@ class Tests(unittest.TestCase):
         nodes = sorted(graph)
         self.assertEqual(nodes, ['a', 'b', 'c', 'd', 'e', 'f', 'g'])
 
-        incoming = graph.get_incoming('c')
-        incoming_nodes = sorted(incoming)
-        self.assertEqual(incoming_nodes, ['a', 'b', 'f'])
-
         return graph
 
     def test_find_path_1(self):
