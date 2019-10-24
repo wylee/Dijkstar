@@ -55,9 +55,6 @@ class Tests(unittest.TestCase):
             'e': {'f': 1},
         })
 
-        graph.add_node('f', {'c': 1})
-        graph['f'] = {'c': 1}
-
         graph.add_edge('f', 'c', 1)
         graph.add_edge('g', 'b', 1)
 

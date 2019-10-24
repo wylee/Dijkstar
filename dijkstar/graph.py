@@ -53,12 +53,7 @@ class Graph(collections.MutableMapping):
             self._incoming[v][u] = edge
 
     def __delitem__(self, u):
-        """Remove node ``u``."""
-        del self._data[u]
-        del self._incoming[u]
-        for incoming in self._incoming.values():
-            if u in incoming:
-                del incoming[u]
+        self.remove_node(u)
 
     def __iter__(self):
         return iter(self._data)
@@ -98,6 +93,26 @@ class Graph(collections.MutableMapping):
     def get_node(self, u):
         """Get node ``u``."""
         return self._data[u]
+
+    def remove_node(self, u):
+        """Remove node ``u``.
+
+        In addition to removing the node itself from the underlying data
+        dict, which in turn removes its outgoing edges, this also
+        removes the node's incoming edges.
+
+        """
+        data = self._data
+        incoming = self._incoming
+        neighbors = data[u]
+
+        for v in incoming[u]:
+            del data[v][u]
+        for v in neighbors:
+            del incoming[v][u]
+
+        del data[u]
+        del incoming[u]
 
     @property
     def node_count(self):
