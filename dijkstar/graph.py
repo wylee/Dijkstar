@@ -56,6 +56,9 @@ class Graph(collections.MutableMapping):
             return self._data == other
         return self._data == other._data
 
+    def __repr__(self):
+        return repr(self._data)
+
     def get_data(self):
         """Return the underlying data dict."""
         return self._data
