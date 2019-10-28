@@ -31,7 +31,6 @@ class TestGraph(unittest.TestCase):
 
     def _check_graph(self, graph):
         self.assertEqual(graph, self.graph)
-        self.assertEqual(graph._data, self.graph._data)
         self.assertEqual(graph._incoming, self.graph._incoming)
 
     def test_1_dump(self):

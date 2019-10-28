@@ -41,6 +41,11 @@ class Graph(collections.MutableMapping):
     def __len__(self):
         return self.node_count
 
+    def __eq__(self, other):
+        if isinstance(other, dict):
+            return self._data == other
+        return self._data == other._data
+
     def get_data(self):
         """Return the underlying data dict."""
         return self._data
