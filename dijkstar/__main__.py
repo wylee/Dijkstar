@@ -72,6 +72,9 @@ def add_serve_command(subparsers):
     parser.add_argument('-e', '--edge-serializer')
     parser.add_argument('-E', '--edge-deserializer')
 
+    parser.add_argument('-c', '--cost-func', help='Cost function import path')
+    parser.add_argument('-u', '--heuristic-func', help='Heuristic function import path')
+
     # Uvicorn args
     parser.add_argument(
         '-a', '--app', default='dijkstar.server.app:app',
@@ -135,6 +138,8 @@ def serve(args):
     add_to_environ('node_deserializer')
     add_to_environ('edge_serializer')
     add_to_environ('edge_deserializer')
+    add_to_environ('cost_func')
+    add_to_environ('heuristic_func')
 
     # XXX: Dijkstar server imports need to come after environ is set up
     #      so settings will be initialized correctly.

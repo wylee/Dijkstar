@@ -134,10 +134,11 @@ class TestClient(unittest.TestCase):
 
     def test_routes(self):
         client = self.client
-        self.assertEqual(len(client.routes), 5)
+        self.assertEqual(len(client.routes), 6)
         self.assertIn('graph-info', client.routes)
         self.assertIn('get-node', client.routes)
         self.assertIn('get-edge', client.routes)
+        self.assertIn('find-path', client.routes)
 
     def test_get_graph_info(self):
         client = self.client
@@ -179,3 +180,32 @@ class TestClient(unittest.TestCase):
         client = self.client
         data = client.get_edge(1, 2)
         self.assertEqual(data, self.graph.get_edge(1, 2))
+
+    def test_find_path(self):
+        client = self.client
+        data = client.find_path(1, 4)
+        self.assertIn('nodes', data)
+        self.assertIn('edges', data)
+        self.assertIn('costs', data)
+        self.assertIn('total_cost', data)
+        nodes = data['nodes']
+        edges = data['edges']
+        self.assertEqual(len(nodes), 3)
+        self.assertEqual(len(edges), 2)
+        self.assertEqual(nodes, [1, 2, 4])
+        self.assertEqual(edges, [1, 1])
+
+    def test_find_path_with_annex(self):
+        client = self.client
+        # Insert node between nodes 1 and 2 then find a path from that
+        # node (-1) to node 4.
+        data = client.find_path(-1, 4, annex_nodes=(1, 2), annex_edges=(
+            (1, -1, 1.1),
+            (-1, 2, 1.2),
+        ))
+        nodes = data['nodes']
+        edges = data['edges']
+        self.assertEqual(len(nodes), 3)
+        self.assertEqual(len(edges), 2)
+        self.assertEqual(nodes, [-1, 2, 4])
+        self.assertEqual(edges, [1.2, 1])

@@ -7,7 +7,7 @@ from starlette.responses import JSONResponse
 from starlette.schemas import OpenAPIResponse, SchemaGenerator
 from starlette.templating import _TemplateResponse
 
-from .. import Graph
+from .. import algorithm, Graph
 from . import utils
 from .templates import render_template
 
@@ -15,6 +15,7 @@ from .templates import render_template
 __all__ = [
     'get_edge',
     'get_node',
+    'find_path',
     'graph_info',
     'home',
     'schema',
@@ -206,3 +207,133 @@ async def get_edge(request: Request) -> JSONResponse:
     except KeyError:
         raise HTTPException(404, f'Edge ({u}, {v}) not found in graph')
     return JSONResponse(data)
+
+
+async def find_path(request: Request) -> JSONResponse:
+    """Find path between two nodes.
+
+    ---
+    parameters:
+        - in: path
+          name: start_node
+          required: true
+          description: Start node
+        - in: path
+          name: destination_node
+          required: true
+          description: Destination node
+        - in: query
+          name: annex_nodes
+          required: false
+          format: Semicolon-separated list of nodes
+          description:
+              Nodes from the main graph to copy to the annex graph.
+              Direct travel between these nodes is disabled--the edges
+              between them are removed from the annex graph.
+        - in: query
+          name: annex_edges
+          required: false
+          format: Semicolon-separated list of edges; each edge has the
+              form "{u}:{v}:{edge_data}"
+          description: Additional edges to add to the annex graph.
+        - in: query
+          name: cost_func
+          required: false
+          format: Import path like 'package.module:cost_func'
+          description: Alternative cost function
+        - in: query
+          name: heuristic_func
+          required: false
+          format: Import path like 'package.module:heuristic_func'
+          description: Alternative heuristic function
+        - in: query
+          name: fields
+          required: false
+          format: Semicolon-separated list of fields
+          description:
+              :class:`PathInfo` fields to include in response
+    responses:
+        200:
+            description: A :class:`PathInfo` as a dict
+        400:
+            description:
+                - Start node or end node not present in graph
+                - Unknown :class:`PathInfo` field name specified
+        404:
+            description:
+                Start or destination node doesn't exist or path not
+                found
+
+    """
+    state = request.app.state
+    settings = state.settings
+    graph = state.graph
+
+    node_deserializer = settings.node_deserializer
+    edge_deserializer = settings.edge_deserializer
+
+    path_params = request.path_params
+    query_params = request.query_params
+
+    start_node = path_params['start_node']
+    destination_node = path_params['destination_node']
+
+    if node_deserializer is not None:
+        start_node = node_deserializer(start_node)
+        destination_node = node_deserializer(destination_node)
+
+    annex = None
+
+    annex_nodes = query_params.get('annex_nodes')
+    if annex_nodes:
+        annex_nodes = annex_nodes.split(';')
+        if node_deserializer is not None:
+            annex_nodes = [node_deserializer(n) for n in annex_nodes]
+        annex = graph.subgraph(annex_nodes, disconnect=True)
+
+    annex_edges = query_params.get('annex_edges')
+    if annex_edges:
+        if annex is None:
+            annex = Graph()
+        annex_edges = annex_edges.split(';')
+        for item in annex_edges:
+            u, v, edge = item.split(':', 2)
+            if node_deserializer is not None:
+                u, v = node_deserializer(u), node_deserializer(v)
+            if edge_deserializer is not None:
+                edge = edge_deserializer(edge)
+            annex.add_edge(u, v, edge)
+
+    if start_node not in graph and start_node not in annex:
+        raise HTTPException(400, f'Node {start_node} not present in graph')
+    if destination_node not in graph and destination_node not in annex:
+        raise HTTPException(400, f'Node {destination_node} not present in graph')
+
+    cost_func = query_params.get('cost_func')
+    cost_func = utils.import_object(cost_func) or settings.cost_func
+
+    heuristic_func = query_params.get('heuristic_func')
+    heuristic_func = utils.import_object(heuristic_func) or settings.heuristic_func
+
+    fields = (query_params.get('fields') or '').strip()
+    if fields:
+        fields = set(name.strip() for name in fields.split(';'))
+
+    try:
+        info = algorithm.find_path(
+            graph, start_node, destination_node, annex or None, cost_func, heuristic_func)
+    except algorithm.NoPathError as exc:
+        raise HTTPException(404, str(exc))
+
+    info = info._asdict()
+
+    if fields:
+        filtered_info = {}
+        for name in fields:
+            if name in info:
+                filtered_info[name] = info[name]
+            else:
+                raise HTTPException(400, f'Invalid PathInfo field name: {name}')
+        info = filtered_info
+
+    return JSONResponse(info)

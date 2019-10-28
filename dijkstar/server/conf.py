@@ -135,4 +135,12 @@ settings = Settings(
         'cast': utils.import_object,
         'default': 'json:loads',
     },
+    cost_func={
+        'doc': 'Default cost function',
+        'cast': utils.import_object,
+    },
+    heuristic_func={
+        'doc': 'Default heuristic function',
+        'cast': utils.import_object,
+    },
 )

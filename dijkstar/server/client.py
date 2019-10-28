@@ -130,6 +130,37 @@ class Client:
         """Get node."""
         return self._get('get-edge', f'{u}/{v}')
 
+    @route
+    def find_path(self, start_node: Any, destination_node: Any,
+                  annex_nodes: tuple = None, annex_edges: tuple = None,
+                  cost_func: str = None, heuristic_func: str = None,
+                  fields: tuple = None):
+        """Find path in graph from start node ``s`` to ``d``."""
+        params = {}
+        node_serializer = self.node_serializer
+        edge_serializer = self.edge_serializer
+        if annex_nodes:
+            if node_serializer is not None:
+                annex_nodes = (node_serializer(node) for node in annex_nodes)
+            params['annex_nodes'] = ';'.join(annex_nodes)
+        if annex_edges:
+            annex_edges_param = []
+            for u, v, edge in annex_edges:
+                if node_serializer is not None:
+                    u = node_serializer(u)
+                    v = node_serializer(v)
+                if edge_serializer is not None:
+                    edge = edge_serializer(edge)
+                annex_edges_param.append(f'{u}:{v}:{edge}')
+            params['annex_edges'] = ';'.join(annex_edges_param)
+        if cost_func:
+            params['cost_func'] = cost_func
+        if heuristic_func:
+            params['heuristic_func'] = heuristic_func
+        if fields:
+            params['fields'] = ';'.join(fields)
+        return self._get('find-path', f'{start_node}/{destination_node}', params)
+
     def __str__(self):
         items = ['Dijkstar Client', f'Base URL: {self.base_url}', 'Routes:']
         items.extend(f'    {name} => {url}' for name, url in self.routes.items())

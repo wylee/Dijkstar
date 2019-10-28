@@ -34,6 +34,7 @@ app.add_route('/load-graph', endpoints.load_graph, methods=['POST'])
 app.add_route('/reload-graph', endpoints.reload_graph, methods=['POST'])
 app.add_route('/get-node/{node}', endpoints.get_node)
 app.add_route('/get-edge/{u}/{v}', endpoints.get_edge)
+app.add_route('/find-path/{start_node}/{destination_node}', endpoints.find_path)
 
 
 # Exception Handlers
