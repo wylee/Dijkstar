@@ -58,13 +58,11 @@ class Tests(unittest.TestCase):
         graph.add_edge('f', 'c', 1)
         graph.add_edge('g', 'b', 1)
 
-        nodes = list(graph)
-        nodes.sort()
-        self.assertEqual(nodes, ['a', 'b', 'd', 'e', 'f', 'g'])
+        nodes = sorted(graph)
+        self.assertEqual(nodes, ['a', 'b', 'c', 'd', 'e', 'f', 'g'])
 
         incoming = graph.get_incoming('c')
-        incoming_nodes = list(incoming.keys())
-        incoming_nodes.sort()
+        incoming_nodes = sorted(incoming)
         self.assertEqual(incoming_nodes, ['a', 'b', 'f'])
 
         return graph
@@ -78,13 +76,13 @@ class Tests(unittest.TestCase):
         self.assertEqual(total_cost, 3)
 
     def test_find_path_with_annex(self):
-        annex = Graph({1: {2: 1, 3: 0.5}})
-        result = find_path(self.graph1, 1, 4, annex=annex)
+        annex = Graph({-1: {1: 1}, 4: {-2: 1}})
+        result = find_path(self.graph1, -1, -2, annex=annex)
         nodes, edges, costs, total_cost = result
-        self.assertEqual(nodes, [1, 3, 4])
-        self.assertEqual(edges, [0.5, 2])
-        self.assertEqual(costs, [0.5, 2])
-        self.assertEqual(total_cost, 2.5)
+        self.assertEqual(nodes, [-1, 1, 2, 4, -2])
+        self.assertEqual(edges, [1, 1, 2, 1])
+        self.assertEqual(costs, edges)
+        self.assertEqual(total_cost, 5)
 
     def test_path_with_cost_func(self):
         graph = {

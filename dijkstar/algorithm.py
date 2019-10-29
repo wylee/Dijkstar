@@ -156,7 +156,7 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
 
         visited.add(u)
 
-        if annex and u in annex:
+        if annex and u in annex and annex[u]:
             neighbors = annex[u]
         else:
             neighbors = graph[u] if u in graph else None

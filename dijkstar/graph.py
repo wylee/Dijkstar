@@ -111,6 +111,8 @@ class Graph(collections.MutableMapping):
             else:
                 data[v] = {u: edge}
             incoming[u][v] = edge
+        elif v not in data:
+            data[v] = {}
 
         return edge
 
@@ -184,6 +186,8 @@ class Graph(collections.MutableMapping):
                 else:
                     data[v][u] = e
                 incoming[u][v] = e
+            elif v not in data:
+                data[v] = {}
 
         return node_data
 
