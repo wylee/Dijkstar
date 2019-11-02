@@ -1,13 +1,16 @@
 from setuptools import find_packages, setup
 
 
+from dijkstar import __version__
+
+
 with open('README.rst') as fp:
     long_description = fp.read()
 
 
 setup(
     name='Dijkstar',
-    version='2.5.0.dev0',
+    version=__version__,
     description='Dijkstra/A*',
     long_description=long_description,
     license='MIT',

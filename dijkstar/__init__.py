@@ -20,3 +20,6 @@
 # flake8: noqa: F401
 from dijkstar.algorithm import find_path, NoPathError
 from dijkstar.graph import Graph
+
+
+__version__ = '2.5.0.dev0'
