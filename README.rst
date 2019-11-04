@@ -31,6 +31,9 @@ current node, the edge that connects u to v, and the edge that was
 traversed previously to get to the current node. In the example above,
 the cost function simply returns the edge's `cost`.
 
+Graph Export & Import
+=====================
+
 The graph can be saved to disk (pickled) like so::
 
     >>> graph.dump(path)
