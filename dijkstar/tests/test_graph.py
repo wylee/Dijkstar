@@ -35,6 +35,18 @@ class TestGraph(unittest.TestCase):
         self.assertEqual(graph, self.graph)
         self.assertEqual(graph._incoming, self.graph._incoming)
 
+    def test_subgraph(self):
+        subgraph = self.graph.subgraph((1, 2))
+        self.assertEqual(sorted(subgraph), [1, 2])
+        self.assertEqual(subgraph[1], self.graph[1])
+        self.assertEqual(subgraph[2], self.graph[2])
+
+    def test_subgraph_with_disconnect(self):
+        subgraph = self.graph.subgraph((1, 2), disconnect=True)
+        self.assertEqual(sorted(subgraph), [1, 2])
+        self.assertEqual(subgraph[1], {4: 1})
+        self.assertEqual(subgraph[2], {3: 1, 5: 1})
+
     def test_1_dump(self):
         self.graph.dump(self.pickle_file)
         self.assertTrue(os.path.exists(self.pickle_file))

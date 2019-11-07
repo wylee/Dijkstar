@@ -1,5 +1,6 @@
 import collections
 import marshal
+from copy import copy
 
 try:
     import cPickle as pickle
@@ -62,6 +63,27 @@ class Graph(collections.MutableMapping):
     def get_data(self):
         """Return the underlying data dict."""
         return self._data
+
+    def subgraph(self, nodes, disconnect=False):
+        """Get a subgraph with the specified nodes.
+
+        If ``disconnect`` is specified, the nodes will be disconnected
+        from each other; this is useful when creating annex graphs.
+
+        """
+        subgraph = self.__class__()
+        for u in nodes:
+            neighbors = self[u]
+            for v, edge in neighbors.items():
+                u, v, edge = copy(u), copy(v), copy(edge)
+                subgraph.add_edge(u, v, edge)
+        if disconnect:
+            for u in nodes:
+                neighbors = subgraph[u]
+                for v in nodes:
+                    if v in neighbors:
+                        del neighbors[v]
+        return subgraph
 
     def add_edge(self, u, v, edge=None):
         """Add an ``edge`` from ``u`` to ``v``.
