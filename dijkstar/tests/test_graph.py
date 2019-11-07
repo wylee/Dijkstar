@@ -26,8 +26,10 @@ class TestGraph(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        os.remove(cls.pickle_file)
-        os.remove(cls.marshal_file)
+        if os.path.exists(cls.pickle_file):
+            os.remove(cls.pickle_file)
+        if os.path.exists(cls.marshal_file):
+            os.remove(cls.marshal_file)
 
     def _check_graph(self, graph):
         self.assertEqual(graph, self.graph)
