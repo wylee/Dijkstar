@@ -1,5 +1,6 @@
 import collections
 import marshal
+import os
 from copy import copy
 
 try:
@@ -236,6 +237,45 @@ class Graph(collections.MutableMapping):
                 writer(self._data, fp)
         else:
             writer(self._data, to)
+
+    @classmethod
+    def guess_load(cls, from_, ext=None):
+        """Read graph based on extension or attempt all loaders.
+
+        If a file name with an extension is passed *or* a file and an
+        extension are passed, load the graph from the file based on the
+        extension.
+
+        Otherwise, try to load the file using pickle, and if that fails,
+        with marshal.
+
+        """
+        if not ext and isinstance(from_, str):
+            _, ext = os.path.splitext(from_)
+        if ext:
+            ext = ext.lstrip('.')
+        if ext == 'pickle':
+            return cls.load(from_)
+        elif ext == 'marshal':
+            return cls.unmarshal(from_)
+        try:
+            return Graph.load(from_)
+        except pickle.UnpicklingError:
+            from_.seek(0)
+            try:
+                # NOTE: We don't simply call Graph.unmarshal() here
+                # because errors raised by Graph._read() when it calls
+                # Graph(data) could be conflated with errors raised by
+                # marshal.load().
+                data = marshal.load(from_)
+            except (EOFError, ValueError, TypeError):
+                pass
+            else:
+                return cls(data)
+        raise ValueError(
+            'Could not guess how to load graph; Graph.guess_load() requires either a file with '
+            'a .pickle or .marshal extension, for the extension/type of the file to be specified, '
+            'or for the file to be loadable with Graph.load() or Graph.unmarshal().')
 
     @classmethod
     def load(cls, from_):
