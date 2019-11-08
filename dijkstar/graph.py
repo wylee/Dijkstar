@@ -224,10 +224,10 @@ class Graph(collections.MutableMapping):
         """Read from path or open file using specified reader."""
         if isinstance(from_, str):
             with open(from_, 'rb') as fp:
-                neighbors = reader(fp)
+                data = reader(fp)
         else:
-            neighbors = reader(from_)
-        return cls(neighbors)
+            data = reader(from_)
+        return cls(data)
 
     def _write(self, writer, to):
         """Write to path or open file using specified writer."""
