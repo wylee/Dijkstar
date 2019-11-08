@@ -14,9 +14,6 @@ algorithm toward a destination instead of fanning out in every
 direction. Using such a heuristic function converts Dijkstra to A* (and
 this is where the name "Dijkstar" comes from).
 
-Performance is decent on a graph with 100,000+ nodes. Runs in around .5
-seconds on average.
-
 Example::
 
     >>> from dijkstar import Graph, find_path
