@@ -1,8 +1,43 @@
 2.5.0 (unreleased)
 ------------------
 
-In progress...
-
+- Started supporting for Python 3.7 and 3.8 (no code changes required).
+- Added support for undirected graphs. The implementation is simple. An
+  undirected graph is just a directed graph that automatically adds the
+  edge `(v, u)` when `(u, v)` is added and automatically removes
+  `(v, u)` when `(u, v)` is removed.
+- Added several new `Graph` methods and properties:
+  - `get_data()` -> Get underlying data dict
+  - `node_count` -> Return the number of nodes in the graph
+  - `get_node()` -> Get a node
+  - `remove_node()` -> Remove a node
+  - `edge_count` -> Return the number of edges in the graph
+  - `get_edge()` -> Get an edge
+  - `remove_edge()` -> Remove an edge
+  - `subgraph()` -> Get a subgraph with the specified nodes
+  - `guess_load()` -> Load any supported graph type from file
+  - `__eq__()` -> Graph equal to other graph? (compares data dicts)
+  - `__repr__()` -> Graph representation (repr of data dict)
+- Made `Graph`'s mapping interface methods (e.g., `__setitem__()`) call
+  the corresponding method (e.g., `add_node()`) instead of vice versa.
+- Made `Graph.add_node()` return the added node.
+- Made `Graph.add_edge()` return the added edge.
+- Fixed `Graph.add_edge(u, v)` so it *always* updates `v`'s incoming
+  list, both when `u` is already in the graph and when it's not.
+- When a node's incoming list becomes empty, delete it (i.e., the node's
+  entry in the incoming list, not the node).
+- In `single_source_shortest_paths()`, operate on the underlying data
+  dict instead of going through `Graph`'s mapping interface. This should
+  improve performance (or, at least, that's the intent).
+- Added `debug` flag to `single_source_shortest_paths()`. When set,
+  additional debugging info is returned along with the path info.
+- Improved README, esp. wrt. path-finding examples and cost functions.
+- Added and improved docstrings.
+- Added more tests.
+- Added Travis CI config.
+- Started using setuptools instead of distutils for packaging.
+- Added `dijkstar.__version__`.
+- Improved some other packaging-related stuff.
 
 2.4.0 (2018-01-01)
 ------------------
