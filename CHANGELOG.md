@@ -1,11 +1,9 @@
-3.0.0 (unreleased)
-------------------
+## 3.0.0 - unreleased
 
 In progress...
 
 
-2.5.0 (2019-11-07)
-------------------
+## 2.5.0 - 2019-11-07
 
 - Started supporting for Python 3.7 and 3.8 (no code changes required).
 - Added support for undirected graphs. The implementation is simple. An
@@ -45,15 +43,13 @@ In progress...
 - Added `dijkstar.__version__`.
 - Improved some other packaging-related stuff.
 
-2.4.0 (2018-01-01)
-------------------
+## 2.4.0 - 2018-01-01
 
 - Added option of passing an open file to `Graph` read/write methods (in
   addition to being able to pass a path name as before).
 
 
-2.3 (2017-11-09)
-----------------
+## 2.3 - 2017-11-09
 
 - Added incremental count to priority queue entries in
   `algorithm.single_source_shortest_paths()`. The reason for this is
@@ -74,8 +70,7 @@ In progress...
 - Added tox config
 
 
-2.2 (2014-03-31)
-----------------
+## 2.2 - 2014-03-31
 
 - Bugfix: Pass previous edge to cost & heuristic functions instead of
   the whole predecessor tuple (node, edge, cost).
@@ -83,8 +78,7 @@ In progress...
 - Improve package metadata.
 
 
-2.1 (2014-02-01)
-----------------
+## 2.1 - 2014-02-01
 
 - Made Python 3 compatible (required one tiny change in test code).
 - Added a proper version of break-early.
@@ -101,15 +95,13 @@ In progress...
 - Add more tests.
 
 
-2.0 (2013-03-26)
-----------------
+## 2.0 - 2013-03-26
 
 - Assume Buildout 2.0.
 - Removed naive break-early logic (see r666129f3eed8).
 
 
-2.0b3 (2012-12-06)
-------------------
+## 2.0b3 - 2012-12-06
 
 - Tried to improve performance slightly by importing heappush and
   heappop and using them directly in the single_source_shortest_paths
@@ -127,15 +119,13 @@ In progress...
   my tests), but marshal supports only built-in types.
 
 
-2.0b2 (2012-12-04)
-------------------
+## 2.0b2 - 2012-12-04
 
 Fixed broken package config. setup() call was missing packages option,
 so no packages were added to the distribution. Also added a MANIFEST.in.
 
 
-2.0b1 (2012-12-04)
-------------------
+## 2.0b1 - 2012-12-04
 
 - Cleaned up a lot of stuff--made more readable, fixed formatting,
   fixed single letter variable names, improved comments, cleaned up
@@ -175,8 +165,7 @@ so no packages were added to the distribution. Also added a MANIFEST.in.
   unnecessarily as a special sentinel value)
 
 
-History
--------
+## History
 
 Dijkstar was originally written in December of 2004, and hadn't changed
 much between then and just recently. It was spun off from the byCycle

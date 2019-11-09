@@ -4,7 +4,7 @@ from setuptools import find_packages, setup
 from dijkstar import __version__
 
 
-with open('README.rst') as fp:
+with open('README.md') as fp:
     long_description = fp.read()
 
 
@@ -23,6 +23,7 @@ setup(
         'dev': [
             'coverage',
             'flake8',
+            'runcommands',
             'tox',
         ],
     },

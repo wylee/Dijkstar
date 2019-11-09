@@ -1,5 +1,4 @@
-Dijkstar
-++++++++
+# Dijkstar
 
 Dijkstar is an implementation of Dijkstra's single-source shortest-paths
 algorithm. If a destination node is given, the algorithm halts when that
@@ -14,7 +13,7 @@ algorithm toward a destination instead of fanning out in every
 direction. Using such a heuristic function converts Dijkstra to A* (and
 this is where the name "Dijkstar" comes from).
 
-Example::
+Example:
 
     >>> from dijkstar import Graph, find_path
     >>> graph = Graph()
@@ -30,10 +29,10 @@ Example::
 
 In this example, the edges are just simple numeric values--110, 125,
 108--that could represent lengths, such as the length of a street
-segment between two intersections. ``find_path`` will use these values
+segment between two intersections. `find_path` will use these values
 directly as costs.
 
-Example with cost function::
+Example with cost function:
 
     >>> from dijkstar import Graph, find_path
     >>> graph = Graph()
@@ -67,21 +66,20 @@ costs in your graph are fixed, a cost function will only add unnecessary
 overhead. In the example above, a penalty is added when the street name
 changes.
 
-When using a cost function, one recommendation is to compute a base cost when
-possible. For example, for a graph that represents a street network, the base
-cost for each street segment (edge) could be the length of the segment
-multiplied by the speed limit. There are two advantages to this: the size of
-the graph will be smaller and the cost function will be doing less work, which
-may improve performance.
+When using a cost function, one recommendation is to compute a base cost
+when possible. For example, for a graph that represents a street
+network, the base cost for each street segment (edge) could be the
+length of the segment multiplied by the speed limit. There are two
+advantages to this: the size of the graph will be smaller and the cost
+function will be doing less work, which may improve performance.
 
-Graph Export & Import
-=====================
+## Graph Export & Import
 
-The graph can be saved to disk (pickled) like so::
+The graph can be saved to disk (pickled) like so:
 
     >>> graph.dump(path)
 
-And read back like this (load is a classmethod that returns a
-populated Graph instance)::
+And read back like this (load is a classmethod that returns a populated
+Graph instance):
 
     >>> Graph.load(path)
