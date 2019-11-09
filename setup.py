@@ -19,11 +19,13 @@ setup(
     keywords='Dijkstra A* algorithms',
     url='https://github.com/wylee/Dijkstar',
     packages=find_packages(),
+    install_requires=[
+        'runcommands>=1.0a40',
+    ],
     extras_require={
         'dev': [
             'coverage',
             'flake8',
-            'runcommands',
             'tox',
         ],
         'client': [
