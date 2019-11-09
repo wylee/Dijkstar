@@ -4,7 +4,7 @@
 In progress...
 
 
-2.5.0 (unreleased)
+2.5.0 (2019-11-07)
 ------------------
 
 - Started supporting for Python 3.7 and 3.8 (no code changes required).
