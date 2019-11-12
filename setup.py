@@ -43,7 +43,7 @@ setup(
     },
     entry_points={
         'console_scripts': {
-            'dijkstar=dijkstar.__main__:main',
+            'dijkstar = dijkstar.__main__:main.console_script',
         },
     },
     classifiers=[

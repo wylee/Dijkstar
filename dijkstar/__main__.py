@@ -1,120 +1,136 @@
-import argparse
 import os
 import pathlib
+import shutil
 import sys
+import textwrap
+
+from runcommands import arg, command, subcommand
+from runcommands.util import abort
 
 from . import __version__
 
 
-def main(argv=None):
-    parser = argparse.ArgumentParser(prog='dijkstar', add_help=False)
-    parser.add_argument(
-        '-h', '--help', action='store_true', default=False, help='Show version and help message')
-    parser.add_argument(
-        '-i', '--info', action='store_true', default=False, help='Show version and usage summary')
-    subparsers = parser.add_subparsers()
-    add_serve_command(subparsers)
-    args = parser.parse_args(argv)
-    if hasattr(args, 'func'):
-        args.func(args)
-    else:
-        has_func = hasattr(args, 'func')
-        show_help = args.help
-        show_info = not show_help and (args.info or not has_func)
-        if show_help or show_info:
-            print(f'Dijkstar {__version__}')
-        if show_help:
-            print()
-            parser.print_help()
-        elif show_info:
-            parser.print_usage()
-        else:
-            args.func(args)
+@command(name='dijkstar')
+def main(
+    subcommand: arg(default=None, help='Command to run'),
+    help_: arg(help='Show version, usage, and available subcommands then exit') = False,
+    version: arg(help='Show version then exit') = False,
+):
+    """Dijkstar base command."""
+    show_help = help_ or (subcommand is None and not version)
+    term_width = min(72, shutil.get_terminal_size((72, 20)).columns)
+    if show_help or version:
+        print(f'Dijkstar {__version__}')
+    if show_help:
+        print()
+        print(textwrap.fill(f'{main.arg_parser.format_usage()}', term_width), '\n', sep='')
+        print('available subcommands:\n')
+        fill = max(len(sub.base_name) for sub in main.subcommands) + 4
+        short_desc_width = term_width - fill
+        for sub in main.subcommands:
+            name = f'{f"  {sub.base_name}":<{fill}}'
+            lines = textwrap.wrap(sub.short_description, short_desc_width)
+            print(name, lines[0], sep='')
+            for line in lines[1:]:
+                print(' ' * fill, line, sep='')
+        message = f'Run `{main.name} SUBCOMMAND -h` for subcommand usage/help'
+        print('\n', textwrap.fill(message, term_width), sep='')
 
 
-def add_serve_command(subparsers):
-    # XXX: Heuristic for determining if server functionality is
-    #      installed.
+@subcommand(main)
+def serve(
+    # App config
+    env_file: arg(
+        short_option='-f',
+        help='Env file to load settings from [$PWD/.env, if present]',
+    ) = None,
+
+    log_config_file: arg(
+        short_option='-l',
+        mutual_exclusion_group='logging',
+        help='Path to Python logging config file',
+    ) = None,
+    log_level: arg(
+        short_option='-L',
+        type=lambda level: level.upper(),
+        mutual_exclusion_group='logging',
+        help='Log level for basic logging config',
+    ) = None,
+
+    template_directory: arg(short_option='-t', help='Path to template directory') = None,
+
+    graph_file: arg(
+        short_option='-g',
+        help='Path to graph file to load on startup [None; a new graph will be created]',
+    ) = None,
+    graph_file_type: arg(
+        short_option='-T',
+        choices=('marshal', 'pickle'), help='Graph file type [marshal]',
+    ) = None,
+    read_only: arg(
+        short_option='-R',
+        help='Make graph read only by disabling endpoints that modify the graph; this only '
+             'applies when a graph file is specified [Don\'t make read only]'
+    ) = False,
+
+    node_serializer: arg(short_option='-n') = None,
+    node_deserializer: arg(short_option='-N') = None,
+    edge_serializer: arg(short_option='-e') = None,
+    edge_deserializer: arg(short_option='-E') = None,
+
+    cost_func: arg(short_option='-c', help='Cost function import path') = None,
+    heuristic_func: arg(short_option='-u', help='Heuristic function import path') = None,
+
+    # Uvicorn args
+    app: arg(
+        short_option='-a',
+        help='App import path [dijkstar.server.app:app]',
+    ) = 'dijkstar.server.app:app',
+    host: arg(
+        short_option='-H',
+        help='Uvicorn host [127.0.0.1]',
+    ) = '127.0.0.1',
+    port: arg(
+        short_option='-p',
+        help='Uvicorn port [8000]',
+    ) = 8000,
+    reload: arg(
+        short_option='-r',
+        action='store_true',
+        help='Automatically reload uvicorn server when source changes [Don\'t reload]',
+    ) = False,
+    workers: arg(
+        short_option='-w',
+        help='Number of uvicorn processes'
+    ) = None,
+
+    # Shared app config & uvicorn args
+    debug: arg(
+        short_option='-d',
+        help='Enable debug mode in both app and uvicorn; will *also* enable auto-reloading '
+             '(implies --reload) [Don\'t debug]',
+    ) = False,
+
+    # Info args (show and exit)
+    show_settings: arg(
+        short_option='-s',
+        mutual_exclusion_group='info',
+        help='Show app settings [Don\'t show settings]',
+    ) = False,
+    show_schema: arg(
+        short_option='-S',
+        mutual_exclusion_group='info',
+        help='Show OpenAPI schema and exit [Don\'t show schema]',
+    ) = False,
+):
+    """Create Dijkstar server app and run it with uvicorn."""
     try:
         import uvicorn  # noqa: F401
     except ImportError:
-        return
+        abort(1, 'Uvicorn not installed; was Dijkstar installed with the `server` extra?')
 
-    parser = subparsers.add_parser(
-        'serve', description='Create Dijkstar server app and run it with uvicorn')
-
-    parser.set_defaults(func=serve)
-
-    # App config
-    parser.add_argument(
-        '-f', '--env-file', help='Env file to load settings from [$PWD/.env, if present]')
-
-    log_group = parser.add_mutually_exclusive_group()
-    log_group.add_argument('-l', '--log-config-file', help='Path to Python logging config file')
-    log_group.add_argument(
-        '-L', '--log-level', type=lambda level: level.upper(),
-        help='Log level for basic logging config')
-
-    parser.add_argument('-t', '--template-directory', help='Path to template directory')
-
-    parser.add_argument(
-        '-g', '--graph-file',
-        help='Path to graph file to load on startup [None; a new graph will be created]')
-    parser.add_argument(
-        '-T', '--graph-file-type', choices=('marshal', 'pickle'), help='Graph file type [marshal]')
-    parser.add_argument(
-        '-R', '--read-only', action='store_true', default=None,
-        help='Make graph read only by disabling endpoints that modify the graph; this only '
-             'applies when a graph file is specified [Don\'t make read only]')
-
-    parser.add_argument('-n', '--node-serializer')
-    parser.add_argument('-N', '--node-deserializer')
-    parser.add_argument('-e', '--edge-serializer')
-    parser.add_argument('-E', '--edge-deserializer')
-
-    parser.add_argument('-c', '--cost-func', help='Cost function import path')
-    parser.add_argument('-u', '--heuristic-func', help='Heuristic function import path')
-
-    # Uvicorn args
-    parser.add_argument(
-        '-a', '--app', default='dijkstar.server.app:app',
-        help='App import path [dijkstar.server.app:app]')
-    parser.add_argument('-H', '--host', default='127.0.0.1', help='Uvicorn host [127.0.0.1]')
-    parser.add_argument('-p', '--port', type=int, default=8000, help='Uvicorn port [8000]')
-    parser.add_argument(
-        '-r', '--reload', action='store_true', default=None,
-        help='Automatically reload uvicorn server when source changes [Don\'t reload]')
-    parser.add_argument('-w', '--workers', type=int, help='Number of uvicorn processes')
-
-    # Shared app config & uvicorn args
-    parser.add_argument(
-        '-d', '--debug', action='store_true', default=None,
-        help='Enable debug mode in both app and uvicorn; will *also* enable auto-reloading'
-             '(implies --reload) [Don\'t debug]')
-
-    # Info args (show and exit)
-    serve_show_group = parser.add_mutually_exclusive_group()
-
-    serve_show_group.add_argument(
-        '-s', '--show-settings', action='store_true',
-        help='Show app settings [Don\'t show settings]')
-
-    serve_show_group.add_argument(
-        '-S', '--show-schema', action='store_true',
-        help='Show OpenAPI schema and exit [Don\'t show schema]')
-
-
-def serve(args):
-    import uvicorn
     import yaml
 
-    def add_to_environ(name, value=None):
-        if value is None:
-            value = getattr(args, name)
-        if value is not None:
-            os.environ[name.upper()] = str(value)
-
-    env_file = args.env_file
     if env_file is None:
         default_env_file = pathlib.Path.cwd() / pathlib.Path('.env')
         if default_env_file.is_file():
@@ -124,7 +140,16 @@ def serve(args):
         if not env_file.exists():
             raise FileNotFoundError(f'Env file does not exist: {env_file}')
 
-    add_to_environ('env_file', env_file)
+    reload = reload or debug
+
+    # XXX: This needs to be after args are fully initialized because of
+    #      the use of locals().
+    def add_to_environ(name, _locals=locals()):
+        value = _locals[name]
+        if value is not None:
+            os.environ[name.upper()] = str(value)
+
+    add_to_environ('env_file')
     add_to_environ('debug')
     add_to_environ('host')
     add_to_environ('port')
@@ -144,23 +169,24 @@ def serve(args):
     # XXX: Dijkstar server imports need to come after environ is set up
     #      so settings will be initialized correctly.
     from .server import utils
-    from .server.app import app
+    from .server.app import app as starlette_app
     from .server.conf import settings
     from .server.endpoints import schemas
 
-    if args.show_schema:
-        content = schemas.get_schema(app.routes)
+    if show_schema:
+        content = schemas.get_schema(starlette_app.routes)
         print('OpenAPI Schema:\n')
         print(yaml.dump(content, default_flow_style=False).strip())
-    elif args.show_settings:
+    elif show_settings:
         print(settings)
     else:
         # XXX: Needs be called before uvicorn starts to override its
         #      logging config.
         utils.configure_logging(settings)
 
+        locals_ = locals()
         uvicorn_args = ('host', 'port', 'debug', 'reload', 'workers')
-        uvicorn_args = {n: getattr(args, n) for n in uvicorn_args}
+        uvicorn_args = {n: locals_.get(n) for n in uvicorn_args}
         uvicorn_args = {n: v for (n, v) in uvicorn_args.items() if v is not None}
 
         if settings.testing:
@@ -168,8 +194,8 @@ def serve(args):
             # tests to hang.
             return
 
-        uvicorn.run(args.app, **uvicorn_args)
+        uvicorn.run(app, **uvicorn_args)
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    sys.exit(main.console_script())
