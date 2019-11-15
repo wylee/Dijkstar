@@ -1,6 +1,15 @@
-## 3.0.0 - unreleased
+## 3.0a1 - 2019-11-14
 
-In progress...
+- Dropped support for Python 2.7, 3.4, and 3.5.
+- When adding a node with neighbors, nodes are now created for neighbor
+  nodes that aren't already present in the graph.
+- Likewise, when adding an edge `(u, v)`, a node is added for `v` if
+  it's not already present in the graph.
+- Added `dijkstar` console script.
+- Added an HTTP graph server based on Uvicorn and Starlette. Added
+  corresponding `serve` subcommand to `dijkstar` console script.
+- Add RunCommands dependency to make defining console scripts and dev
+  commands easier.
 
 
 ## 2.5.0 - 2019-11-07
