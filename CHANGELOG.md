@@ -1,3 +1,7 @@
+## 3.0.0 - unreleased
+
+In progress...
+
 ## 3.0a1 - 2019-11-14
 
 - Dropped support for Python 2.7, 3.4, and 3.5.
