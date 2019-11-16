@@ -40,6 +40,12 @@ def main(
 @subcommand(main)
 def serve(
     # App config
+    #
+    # NOTE: All app config args should have a default value of None. If
+    # an app config setting isn't specified here, it will be set to the
+    # value of its corresponding environment variables, if that's set,
+    # or to its default value, specified in the dijkstar.server.conf
+    # module. Precedence: command line args > environment > .env.
     env_file: arg(
         short_option='-f',
         help='Env file to load settings from [$PWD/.env, if present]',
@@ -71,7 +77,7 @@ def serve(
         short_option='-R',
         help='Make graph read only by disabling endpoints that modify the graph; this only '
              'applies when a graph file is specified [Don\'t make read only]'
-    ) = False,
+    ) = None,
 
     node_serializer: arg(short_option='-n') = None,
     node_deserializer: arg(short_option='-N') = None,
@@ -101,6 +107,7 @@ def serve(
     ) = False,
     workers: arg(
         short_option='-w',
+        type=int,
         help='Number of uvicorn processes'
     ) = None,
 
@@ -109,7 +116,7 @@ def serve(
         short_option='-d',
         help='Enable debug mode in both app and uvicorn; will *also* enable auto-reloading '
              '(implies --reload) [Don\'t debug]',
-    ) = False,
+    ) = None,
 
     # Info args (show and exit)
     show_settings: arg(
@@ -123,7 +130,13 @@ def serve(
         help='Show OpenAPI schema and exit [Don\'t show schema]',
     ) = False,
 ):
-    """Create Dijkstar server app and run it with uvicorn."""
+    """Create Dijkstar server app and run it with uvicorn.
+
+    For app config args (defined in the dijkstar.server.conf module),
+    command line args take precedence over environment variables, which
+    take precedence over variables specified in the env file.
+
+    """
     try:
         import uvicorn  # noqa: F401
     except ImportError:
