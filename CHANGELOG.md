@@ -1,6 +1,10 @@
-## 3.0.0 - unreleased
+## 3.0a2 - 2019-11-16
 
-In progress...
+- Updated manifest to ensure HTML templates are included in
+  distributions.
+- Fixed default values of some `serve` script app config args (the
+  default values for all app config args must be `None` so that if
+  they're not passed they'll be set from the environment).
 
 ## 3.0a1 - 2019-11-14
 
