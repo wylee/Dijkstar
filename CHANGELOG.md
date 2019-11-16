@@ -1,3 +1,7 @@
+## 3.0.0 - unreleased
+
+In progress...
+
 ## 3.0a2 - 2019-11-16
 
 - Updated manifest to ensure HTML templates are included in
