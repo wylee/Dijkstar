@@ -1,2 +1,3 @@
 include CHANGELOG.md
 include README.md
+recursive-include dijkstar/server/templates *.html
