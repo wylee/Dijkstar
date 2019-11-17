@@ -1,3 +1,7 @@
+## 3.0.0 - unreleased
+
+In progress...
+
 ## 3.0a3 - 2019-11-17
 
 - Updated `setup()` with `include_package_data=True` to ensure HTML
