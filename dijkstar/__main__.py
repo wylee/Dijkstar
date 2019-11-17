@@ -75,6 +75,7 @@ def serve(
     ) = None,
     read_only: arg(
         short_option='-R',
+        type=bool,
         help='Make graph read only by disabling endpoints that modify the graph; this only '
              'applies when a graph file is specified [Don\'t make read only]'
     ) = None,
@@ -102,7 +103,6 @@ def serve(
     ) = 8000,
     reload: arg(
         short_option='-r',
-        action='store_true',
         help='Automatically reload uvicorn server when source changes [Don\'t reload]',
     ) = False,
     workers: arg(
@@ -114,6 +114,7 @@ def serve(
     # Shared app config & uvicorn args
     debug: arg(
         short_option='-d',
+        type=bool,
         help='Enable debug mode in both app and uvicorn; will *also* enable auto-reloading '
              '(implies --reload) [Don\'t debug]',
     ) = None,
