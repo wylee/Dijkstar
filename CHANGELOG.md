@@ -1,6 +1,13 @@
-## 3.0.0 - unreleased
+## 3.0a3 - 2019-11-17
 
-In progress...
+- Updated `setup()` with `include_package_data=True` to ensure HTML
+  templates are included in distributions and installed.
+- Upgraded Starlette 0.12 => 0.13.
+- Fixed some `serve` script flags (again).
+- Added `--root-path` to `serve` script. It's used to set the ASGI root
+  path so that, for example, URLs will be generated with the correct
+  prefix when the server is running under a path other than /.
+- Fixed URLs in home template by using `url_for()`.
 
 ## 3.0a2 - 2019-11-16
 
