@@ -3,7 +3,7 @@ from starlette.templating import Jinja2Templates
 from ..conf import settings
 
 
-templates = Jinja2Templates(directory=str(settings.template_directory))
+templates = Jinja2Templates(directory=settings.template_directory)
 TemplateResponse = templates.TemplateResponse
 
 
