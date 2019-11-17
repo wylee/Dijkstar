@@ -5,9 +5,6 @@ from runcommands.commands import local as _local, release
 __all__ = ['install', 'release']
 
 
-release.default_args['package'] = 'dijkstar'
-
-
 VENV = '.venv'
 BIN = f'./{VENV}/bin'
 

@@ -21,7 +21,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        'runcommands>=1.0a40',
+        'runcommands>=1.0a42',
     ],
     extras_require={
         'dev': [
