@@ -93,6 +93,10 @@ def serve(
         short_option='-a',
         help='App import path [dijkstar.server.app:app]',
     ) = 'dijkstar.server.app:app',
+    root_path: arg(
+        short_option='-o',
+        help='Set this when server is mounted under a path',
+    ) = '',
     host: arg(
         short_option='-H',
         help='Uvicorn host [127.0.0.1]',
@@ -199,7 +203,7 @@ def serve(
         utils.configure_logging(settings)
 
         locals_ = locals()
-        uvicorn_args = ('host', 'port', 'debug', 'reload', 'workers')
+        uvicorn_args = ('root_path', 'host', 'port', 'debug', 'reload', 'workers')
         uvicorn_args = {n: locals_.get(n) for n in uvicorn_args}
         uvicorn_args = {n: v for (n, v) in uvicorn_args.items() if v is not None}
 
