@@ -38,7 +38,7 @@ setup(
             'python-multipart>=0.0.5',
             'pyyaml>=5.1.2',
             'requests>=2.22.0',
-            'starlette>=0.12.13',
+            'starlette>=0.13.0',
             'uvicorn>=0.10.8',
         ],
     },
