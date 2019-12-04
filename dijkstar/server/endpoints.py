@@ -82,7 +82,7 @@ async def load_graph(request: Request) -> JSONResponse:
     This handles three cases:
 
         1. No graph specified: load graph file specified in settings or,
-           one wasn't specified, load a new, emtpy graph
+           if one wasn't specified, load a new, emtpy graph
         2. Graph file specified: load the specified graph from disk
         3. Graph data passed via POST: load that graph data
 
