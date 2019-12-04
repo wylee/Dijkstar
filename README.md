@@ -131,15 +131,23 @@ TODO: Document environment variables here.
 - [ ] Endpoints
   - [ ] HTML home page listing available endpoints
   - [x] /graph-info -> Basic graph info
+  - [x] /load-graph -> Load a new graph (from file or data)
+  - [x] /reload-graph -> Reload the current graph file
   - [ ] /add-edge -> Add edge to graph
-  - [ ] /add-node -> Add nod to graph
-  - [ ] /find-path -> Find path between nodes in graph
+  - [x] /get-edge -> Get edge from graph
+  - [ ] /add-node -> Add node to graph
+  - [x] /get-node -> Get node from graph
+  - [x] /find-path -> Find path between nodes in graph
 - [ ] Client wrapping server API calls
   - [x] Graph info
+  - [x] Load graph
+  - [x] Reload graph
   - [ ] Add edge
+  - [x] Get edge
   - [ ] Add node
-  - [ ] Find path
-- [] Auth?
+  - [x] Get node
+  - [x] Find path
+- [ ] Auth?
 
 ### Clients
 
