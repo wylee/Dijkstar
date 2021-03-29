@@ -25,6 +25,7 @@ setup(
     ],
     extras_require={
         'dev': [
+            'com.wyattbaldwin.make-release',
             'coverage',
             'flake8',
             'tox',

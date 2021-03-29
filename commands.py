@@ -1,8 +1,8 @@
 from runcommands import command
-from runcommands.commands import local as _local, release
+from runcommands.commands import local as _local
 
 
-__all__ = ['install', 'release']
+__all__ = ['install']
 
 
 VENV = '.venv'
