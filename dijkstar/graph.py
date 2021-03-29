@@ -1,6 +1,6 @@
-import collections
 import marshal
 import os
+from collections.abc import MutableMapping
 from copy import copy
 
 try:
@@ -9,7 +9,7 @@ except ImportError:  # pragma: no cover
     import pickle
 
 
-class Graph(collections.MutableMapping):
+class Graph(MutableMapping):
 
     """A very simple graph type.
 
