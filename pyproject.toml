@@ -26,6 +26,8 @@ include = [
 [tool.poetry.dependencies]
 python = "^3.6"
 
+runcommands = { version = "*", allow-prereleases = true }
+
 # Client & Server
 python-multipart = "*"
 requests = "*"
@@ -33,7 +35,6 @@ requests = "*"
 # Server
 jinja2 = "*"
 pyyaml = "*"
-runcommands = { version = "*", allow-prereleases = true }
 starlette = "*"
 uvicorn = "*"
 
@@ -45,9 +46,6 @@ tox = "*"
 
 [tool.poetry.scripts]
 dijkstar = "dijkstar.__main__:main.console_script"
-
-[tool.black]
-target-version = ["py36"]
 
 [build-system]
 requires = ["poetry>=0.12"]
