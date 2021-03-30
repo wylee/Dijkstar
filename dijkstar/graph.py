@@ -8,8 +8,10 @@ try:
 except ImportError:  # pragma: no cover
     import pickle
 
+from six.moves.collections_abc import MutableMapping
 
-class Graph(collections.MutableMapping):
+
+class Graph(MutableMapping):
 
     """A very simple graph type.
 

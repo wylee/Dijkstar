@@ -1,7 +1,9 @@
-3.0.0 (unreleased)
+2.6.0 (2021-03-30)
 ------------------
 
-In progress...
+- Fixed import of `MutableMapping`, which was moved from `collections`
+  to `collections.abc` in Python 3.3 (@xSetech)
+- Added nominal support for Python 3.9
 
 
 2.5.0 (2019-11-07)

@@ -1,16 +1,25 @@
 from setuptools import find_packages, setup
 
 
-from dijkstar import __version__
-
-
 with open('README.rst') as fp:
     long_description = fp.read()
 
 
+# NOTE: These convolutions are to avoid importing from dijkstar because
+#       dependencies might not be installed at this point.
+version_file = 'dijkstar/__init__.py'
+with open(version_file) as fp:
+    for line in fp:
+        if line.startswith('__version__'):
+            version = line.split('=')[1].strip().strip("'")
+            break
+    else:
+        raise RuntimeError('Could not find __version__ in %s' % version_file)
+
+
 setup(
     name='Dijkstar',
-    version=__version__,
+    version=version,
     description='Dijkstra/A*',
     long_description=long_description,
     license='MIT',
@@ -19,6 +28,9 @@ setup(
     keywords='Dijkstra A* algorithms',
     url='https://github.com/wylee/Dijkstar',
     packages=find_packages(),
+    install_requires=[
+        'six',
+    ],
     extras_require={
         'dev': [
             'coverage',
@@ -39,5 +51,6 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
     ],
 )
