@@ -12,11 +12,15 @@ classifiers = [
     "Development Status :: 4 - Beta",
 ]
 
+packages = [
+    { include = "dijkstar", from = "src" }
+]
+
 include = [
     "CHANGELOG.md",
     "LICENSE",
     "README.md",
-    "dijkstar/server/templates/*.html",
+    "src/dijkstar/server/templates/*.html",
 ]
 
 [tool.poetry.dependencies]

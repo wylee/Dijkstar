@@ -3,8 +3,8 @@ import io
 import sys
 import unittest
 
-from .. import __version__
-from ..__main__ import main
+from dijkstar import __version__
+from dijkstar.__main__ import main
 
 
 class TestConsoleScript(unittest.TestCase):

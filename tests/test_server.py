@@ -11,16 +11,16 @@ import unittest
 import requests
 import uvicorn
 
-from ..graph import Graph
-from ..server import utils
-from ..server.client import Client
-from ..server.conf import settings
+from dijkstar.graph import Graph
+from dijkstar.server import utils
+from dijkstar.server.client import Client
+from dijkstar.server.conf import settings
 
 
 class TestUtils(unittest.TestCase):
 
     def test_import_object(self):
-        obj = utils.import_object('dijkstar.tests.test_server:TestUtils')
+        obj = utils.import_object('tests.test_server:TestUtils')
         self.assertIs(obj, self.__class__)
 
     def test_import_object_none(self):
