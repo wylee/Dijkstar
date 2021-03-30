@@ -5,7 +5,10 @@ python:
   - "3.8"
   - "3.9"
 install:
-  - pip install -e .[dev,server]
+  - pip install 'flake8<3.8'
+  - pip install python-multipart requests
+  - pip install jinja2 pyyaml starlette uvicorn
+  - pip install .
 script:
   - python -m unittest discover
   - flake8 .
