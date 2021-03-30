@@ -28,6 +28,9 @@ setup(
     keywords='Dijkstra A* algorithms',
     url='https://github.com/wylee/Dijkstar',
     packages=find_packages(),
+    install_requires=[
+        'six',
+    ],
     extras_require={
         'dev': [
             'coverage',

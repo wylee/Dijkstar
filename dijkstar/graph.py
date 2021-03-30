@@ -1,13 +1,14 @@
 import collections
 import marshal
 import os
-from collections.abc import MutableMapping
 from copy import copy
 
 try:
     import cPickle as pickle
 except ImportError:  # pragma: no cover
     import pickle
+
+from six.moves.collections_abc import MutableMapping
 
 
 class Graph(MutableMapping):
