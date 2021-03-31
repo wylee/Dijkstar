@@ -5,7 +5,7 @@ from inspect import ismethod
 from itertools import count
 
 
-PathInfo = namedtuple('PathInfo', ('nodes', 'edges', 'costs', 'total_cost'))
+PathInfo = namedtuple("PathInfo", ("nodes", "edges", "costs", "total_cost"))
 """Info for shortest path found between start and destination nodes.
 
 ``nodes``
@@ -30,7 +30,7 @@ PathInfo = namedtuple('PathInfo', ('nodes', 'edges', 'costs', 'total_cost'))
 """
 
 
-DebugInfo = namedtuple('DebugInfo', 'costs visited')
+DebugInfo = namedtuple("DebugInfo", "costs visited")
 
 
 class DijkstarError(Exception):
@@ -53,12 +53,14 @@ def find_path(graph, s, d, annex=None, cost_func=None, heuristic_func=None):
 
     """
     predecessors = single_source_shortest_paths(
-        graph, s, d, annex, cost_func, heuristic_func)
+        graph, s, d, annex, cost_func, heuristic_func
+    )
     return extract_shortest_path_from_predecessor_list(predecessors, d)
 
 
-def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
-                                 heuristic_func=None, debug=False):
+def single_source_shortest_paths(
+    graph, s, d=None, annex=None, cost_func=None, heuristic_func=None, debug=False
+):
     """Find path from node ``s`` to all other nodes or just to ``d``.
 
     ``graph``
@@ -109,9 +111,9 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
     """
     # Operate on the underlying data dict to potentially improve
     # performance.
-    if ismethod(getattr(graph, 'get_data', None)):
+    if ismethod(getattr(graph, "get_data", None)):
         graph = graph.get_data()
-    if ismethod(getattr(annex, 'get_data', None)):
+    if ismethod(getattr(annex, "get_data", None)):
         annex = annex.get_data()
 
     counter = count()
@@ -207,7 +209,7 @@ def single_source_shortest_paths(graph, s, d=None, annex=None, cost_func=None,
                 heappush(visit_queue, (cost_of_s_to_u_plus_cost_of_e, next(counter), v))
 
     if d is not None and d not in costs:
-        raise NoPathError('Could not find a path from {0} to {1}'.format(s, d))
+        raise NoPathError("Could not find a path from {0} to {1}".format(s, d))
 
     if debug:
         return predecessors, DebugInfo(costs, visited)
@@ -229,8 +231,8 @@ def extract_shortest_path_from_predecessor_list(predecessors, d):
 
     """
     nodes = [d]  # Nodes on the shortest path from s to d
-    edges = []   # Edges on the shortest path from s to d
-    costs = []   # Costs of the edges on the shortest path from s to d
+    edges = []  # Edges on the shortest path from s to d
+    costs = []  # Costs of the edges on the shortest path from s to d
     u, e, cost = predecessors[d]
     while u is not None:
         # u is the node from which v was reached, e is the edge

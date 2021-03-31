@@ -11,7 +11,7 @@ from . import endpoints, utils
 from .conf import settings
 
 
-__all__ = ['app']
+__all__ = ["app"]
 
 
 # XXX: Needs to be here so our custom logging config will be loaded when
@@ -26,15 +26,21 @@ log = logging.getLogger(__name__)
 
 
 routes = (
-    Route('/', endpoints.home, name='home'),
-    Route('/schema', endpoints.schema, include_in_schema=False),
-    Route('/schema.json', endpoints.schema, include_in_schema=False),
-    Route('/graph-info', endpoints.graph_info, name='graph-info'),
-    Route('/load-graph', endpoints.load_graph, methods=['POST'], name='load-graph'),
-    Route('/reload-graph', endpoints.reload_graph, methods=['POST'], name='reload-graph'),
-    Route('/get-node/{node}', endpoints.get_node, name='get-node'),
-    Route('/get-edge/{u}/{v}', endpoints.get_edge, name='get-edge'),
-    Route('/find-path/{start_node}/{destination_node}', endpoints.find_path, name='find-path'),
+    Route("/", endpoints.home, name="home"),
+    Route("/schema", endpoints.schema, include_in_schema=False),
+    Route("/schema.json", endpoints.schema, include_in_schema=False),
+    Route("/graph-info", endpoints.graph_info, name="graph-info"),
+    Route("/load-graph", endpoints.load_graph, methods=["POST"], name="load-graph"),
+    Route(
+        "/reload-graph", endpoints.reload_graph, methods=["POST"], name="reload-graph"
+    ),
+    Route("/get-node/{node}", endpoints.get_node, name="get-node"),
+    Route("/get-edge/{u}/{v}", endpoints.get_edge, name="get-edge"),
+    Route(
+        "/find-path/{start_node}/{destination_node}",
+        endpoints.find_path,
+        name="find-path",
+    ),
 )
 
 
@@ -50,11 +56,14 @@ async def handler_http_exception(request: Request, exc: HTTPException) -> JSONRe
 
 
 def make_error_response(status_code, detail) -> JSONResponse:
-    return JSONResponse({
-        'status_code': status_code,
-        'explanation': http.HTTPStatus(status_code).phrase,
-        'detail': detail,
-    }, status_code=status_code)
+    return JSONResponse(
+        {
+            "status_code": status_code,
+            "explanation": http.HTTPStatus(status_code).phrase,
+            "detail": detail,
+        },
+        status_code=status_code,
+    )
 
 
 # Event Handlers

@@ -13,36 +13,38 @@ from .templates import render_template
 
 
 __all__ = [
-    'get_edge',
-    'get_node',
-    'find_path',
-    'graph_info',
-    'home',
-    'schema',
+    "get_edge",
+    "get_node",
+    "find_path",
+    "graph_info",
+    "home",
+    "schema",
 ]
 
 
-schemas = SchemaGenerator({
-    "openapi": "3.0.0",
-    "info": {
-        "title": "Dijkstar Server API",
-        "version": "1.0",
+schemas = SchemaGenerator(
+    {
+        "openapi": "3.0.0",
+        "info": {
+            "title": "Dijkstar Server API",
+            "version": "1.0",
+        },
     }
-})
+)
 
 
 class JSONOpenAPIResponse(OpenAPIResponse):
 
-    media_type = f'{OpenAPIResponse.media_type}+json'
+    media_type = f"{OpenAPIResponse.media_type}+json"
 
     def render(self, content: dict, as_json=False) -> bytes:
-        return json.dumps(content).encode('utf-8')
+        return json.dumps(content).encode("utf-8")
 
 
 async def schema(request: Request) -> OpenAPIResponse:
     """Render OpenAPI schema as YAML or JSON."""
     content = schemas.get_schema(request.app.routes)
-    if request.url.path.endswith('.json'):
+    if request.url.path.endswith(".json"):
         return JSONOpenAPIResponse(content)
     return OpenAPIResponse(content)
 
@@ -57,7 +59,7 @@ async def home(request: Request) -> _TemplateResponse:
 
     """
     content = schemas.get_schema(request.app.routes)
-    return render_template(request, 'home.html', {'content': content})
+    return render_template(request, "home.html", {"content": content})
 
 
 async def graph_info(request: Request) -> JSONResponse:
@@ -70,10 +72,12 @@ async def graph_info(request: Request) -> JSONResponse:
 
     """
     graph = request.app.state.graph
-    return JSONResponse({
-        'node_count': graph.node_count,
-        'edge_count': graph.edge_count,
-    })
+    return JSONResponse(
+        {
+            "node_count": graph.node_count,
+            "edge_count": graph.edge_count,
+        }
+    )
 
 
 async def load_graph(request: Request) -> JSONResponse:
@@ -94,33 +98,33 @@ async def load_graph(request: Request) -> JSONResponse:
     """
     app = request.app
     settings = app.state.settings
-    content_type = request.headers.get('Content-Type')
+    content_type = request.headers.get("Content-Type")
 
     file_name = None
     file_type = None
     graph_data = None
 
-    if content_type == 'application/x-www-form-urlencoded':
+    if content_type == "application/x-www-form-urlencoded":
         form_data = await request.form()
-        file_name = form_data.get('file_name')
-        file_type = form_data.get('file_type')
-    elif content_type == 'application/octet-stream':
+        file_name = form_data.get("file_name")
+        file_type = form_data.get("file_type")
+    elif content_type == "application/octet-stream":
         graph_data = await request.body()
 
     if file_name:
         graph = Graph.guess_load(file_name, file_type)
-        message = f'Graph loaded from {file_name}'
+        message = f"Graph loaded from {file_name}"
         if file_type:
-            message = f'{message} ({file_type})'
+            message = f"{message} ({file_type})"
     elif graph_data:
         file = io.BytesIO(graph_data)
         file.seek(0)
         graph = Graph.guess_load(file)
-        message = 'Graph loaded from data'
+        message = "Graph loaded from data"
     else:
         graph = utils.load_graph(settings)
         if settings.graph_file:
-            message = f'Graph reloaded from {settings.graph_file}'
+            message = f"Graph reloaded from {settings.graph_file}"
 
     app.state.graph = graph
     return JSONResponse(message)
@@ -142,9 +146,9 @@ async def reload_graph(request: Request) -> JSONResponse:
     settings = app.state.settings
     app.state.graph = utils.load_graph(settings)
     if settings.graph_file:
-        message = f'Graph reloaded from {settings.graph_file}'
+        message = f"Graph reloaded from {settings.graph_file}"
     else:
-        message = 'Created a new graph since no graph file was specified'
+        message = "Created a new graph since no graph file was specified"
     return JSONResponse(message)
 
 
@@ -167,13 +171,13 @@ async def get_node(request: Request) -> JSONResponse:
     graph = state.graph
     node_deserializer = state.settings.node_deserializer
     path_params = request.path_params
-    node = path_params['node']
+    node = path_params["node"]
     if node_deserializer is not None:
         node = node_deserializer(node)
     try:
         data = graph[node]
     except KeyError:
-        raise HTTPException(404, f'Node {node} not found in graph')
+        raise HTTPException(404, f"Node {node} not found in graph")
     return JSONResponse(data)
 
 
@@ -199,13 +203,13 @@ async def get_edge(request: Request) -> JSONResponse:
     graph = state.graph
     node_deserializer = state.settings.node_deserializer
     path_params = request.path_params
-    u, v = path_params['u'], path_params['v']
+    u, v = path_params["u"], path_params["v"]
     if node_deserializer is not None:
         u, v = node_deserializer(u), node_deserializer(v)
     try:
         data = graph.get_edge(u, v)
     except KeyError:
-        raise HTTPException(404, f'Edge ({u}, {v}) not found in graph')
+        raise HTTPException(404, f"Edge ({u}, {v}) not found in graph")
     return JSONResponse(data)
 
 
@@ -275,8 +279,8 @@ async def find_path(request: Request) -> JSONResponse:
     path_params = request.path_params
     query_params = request.query_params
 
-    start_node = path_params['start_node']
-    destination_node = path_params['destination_node']
+    start_node = path_params["start_node"]
+    destination_node = path_params["destination_node"]
 
     if node_deserializer is not None:
         start_node = node_deserializer(start_node)
@@ -284,20 +288,20 @@ async def find_path(request: Request) -> JSONResponse:
 
     annex = None
 
-    annex_nodes = query_params.get('annex_nodes')
+    annex_nodes = query_params.get("annex_nodes")
     if annex_nodes:
-        annex_nodes = annex_nodes.split(';')
+        annex_nodes = annex_nodes.split(";")
         if node_deserializer is not None:
             annex_nodes = [node_deserializer(n) for n in annex_nodes]
         annex = graph.subgraph(annex_nodes, disconnect=True)
 
-    annex_edges = query_params.get('annex_edges')
+    annex_edges = query_params.get("annex_edges")
     if annex_edges:
         if annex is None:
             annex = Graph()
-        annex_edges = annex_edges.split(';')
+        annex_edges = annex_edges.split(";")
         for item in annex_edges:
-            u, v, edge = item.split(':', 2)
+            u, v, edge = item.split(":", 2)
             if node_deserializer is not None:
                 u, v = node_deserializer(u), node_deserializer(v)
             if edge_deserializer is not None:
@@ -305,23 +309,29 @@ async def find_path(request: Request) -> JSONResponse:
             annex.add_edge(u, v, edge)
 
     if start_node not in graph and start_node not in annex:
-        raise HTTPException(400, f'Node {start_node} not present in graph')
+        raise HTTPException(400, f"Node {start_node} not present in graph")
     if destination_node not in graph and destination_node not in annex:
-        raise HTTPException(400, f'Node {destination_node} not present in graph')
+        raise HTTPException(400, f"Node {destination_node} not present in graph")
 
-    cost_func = query_params.get('cost_func')
+    cost_func = query_params.get("cost_func")
     cost_func = utils.import_object(cost_func) or settings.cost_func
 
-    heuristic_func = query_params.get('heuristic_func')
+    heuristic_func = query_params.get("heuristic_func")
     heuristic_func = utils.import_object(heuristic_func) or settings.heuristic_func
 
-    fields = (query_params.get('fields') or '').strip()
+    fields = (query_params.get("fields") or "").strip()
     if fields:
-        fields = set(name.strip() for name in fields.split(';'))
+        fields = set(name.strip() for name in fields.split(";"))
 
     try:
         info = algorithm.find_path(
-            graph, start_node, destination_node, annex or None, cost_func, heuristic_func)
+            graph,
+            start_node,
+            destination_node,
+            annex or None,
+            cost_func,
+            heuristic_func,
+        )
     except algorithm.NoPathError as exc:
         raise HTTPException(404, str(exc))
 
@@ -333,7 +343,7 @@ async def find_path(request: Request) -> JSONResponse:
             if name in info:
                 filtered_info[name] = info[name]
             else:
-                raise HTTPException(400, f'Invalid PathInfo field name: {name}')
+                raise HTTPException(400, f"Invalid PathInfo field name: {name}")
         info = filtered_info
 
     return JSONResponse(info)

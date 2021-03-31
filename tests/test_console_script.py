@@ -9,7 +9,7 @@ from dijkstar.__main__ import main
 
 class TestConsoleScript(unittest.TestCase):
 
-    usage = f'Dijkstar {__version__}\n\nusage: dijkstar'
+    usage = f"Dijkstar {__version__}\n\nusage: dijkstar"
 
     @classmethod
     def setUpClass(cls):
@@ -32,14 +32,14 @@ class TestConsoleScript(unittest.TestCase):
 
     def test_run_with_help_flag(self):
         with self.redirect_stdout:
-            main.console_script(['-h'])
+            main.console_script(["-h"])
         self.assertTrue(self.get_stdout().startswith(self.usage))
 
     def test_run_serve_command(self):
         with self.redirect_stdout:
-            main.console_script(['serve'])
+            main.console_script(["serve"])
 
     def test_run_serve_with_help_flag(self):
         with self.redirect_stdout:
-            main.console_script(['serve', '-h'])
-        self.assertTrue(self.get_stdout().startswith('usage: dijkstar serve'))
+            main.console_script(["serve", "-h"])
+        self.assertTrue(self.get_stdout().startswith("usage: dijkstar serve"))

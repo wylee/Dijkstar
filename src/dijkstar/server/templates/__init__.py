@@ -11,6 +11,6 @@ def render_template(request, path, context={}):
     """Render template at path with the given context."""
     context = {
         **context,
-        'request': request,
+        "request": request,
     }
     return TemplateResponse(path, context)

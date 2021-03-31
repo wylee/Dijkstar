@@ -212,7 +212,7 @@ class Graph(MutableMapping):
     def _read(cls, reader, from_):
         """Read from path or open file using specified reader."""
         if isinstance(from_, str):
-            with open(from_, 'rb') as fp:
+            with open(from_, "rb") as fp:
                 data = reader(fp)
         else:
             data = reader(from_)
@@ -221,7 +221,7 @@ class Graph(MutableMapping):
     def _write(self, writer, to):
         """Write to path or open file using specified writer."""
         if isinstance(to, str):
-            with open(to, 'wb') as fp:
+            with open(to, "wb") as fp:
                 writer(self._data, fp)
         else:
             writer(self._data, to)
@@ -241,10 +241,10 @@ class Graph(MutableMapping):
         if not ext and isinstance(from_, str):
             _, ext = os.path.splitext(from_)
         if ext:
-            ext = ext.lstrip('.')
-        if ext == 'pickle':
+            ext = ext.lstrip(".")
+        if ext == "pickle":
             return cls.load(from_)
-        elif ext == 'marshal':
+        elif ext == "marshal":
             return cls.unmarshal(from_)
         try:
             return Graph.load(from_)
@@ -261,9 +261,10 @@ class Graph(MutableMapping):
             else:
                 return cls(data)
         raise ValueError(
-            'Could not guess how to load graph; Graph.guess_load() requires either a file with '
-            'a .pickle or .marshal extension, for the extension/type of the file to be specified, '
-            'or for the file to be loadable with Graph.load() or Graph.unmarshal().')
+            "Could not guess how to load graph; Graph.guess_load() requires either a file with "
+            "a .pickle or .marshal extension, for the extension/type of the file to be specified, "
+            "or for the file to be loadable with Graph.load() or Graph.unmarshal()."
+        )
 
     @classmethod
     def load(cls, from_):

@@ -7,22 +7,23 @@ from dijkstar.graph import Graph
 
 
 class TestGraph(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         cls.pickle_file = tempfile.mktemp()
         cls.marshal_file = tempfile.mktemp()
-        cls.graph = Graph({
-            1: {2: 1, 4: 1},
-            2: {1: 1, 3: 1, 5: 1},
-            3: {2: 1, 6: 1},
-            4: {1: 1, 5: 1, 7: 1},
-            5: {2: 1, 4: 1, 6: 1, 8: 1},
-            6: {3: 1, 5: 1, 9: 1},
-            7: {4: 1, 8: 1},
-            8: {5: 1, 7: 1, 9: 1},
-            9: {6: 1, 8: 1},
-        })
+        cls.graph = Graph(
+            {
+                1: {2: 1, 4: 1},
+                2: {1: 1, 3: 1, 5: 1},
+                3: {2: 1, 6: 1},
+                4: {1: 1, 5: 1, 7: 1},
+                5: {2: 1, 4: 1, 6: 1, 8: 1},
+                6: {3: 1, 5: 1, 9: 1},
+                7: {4: 1, 8: 1},
+                8: {5: 1, 7: 1, 9: 1},
+                9: {6: 1, 8: 1},
+            }
+        )
 
     @classmethod
     def tearDownClass(cls):
@@ -61,11 +62,11 @@ class TestGraph(unittest.TestCase):
         self._check_graph(graph)
 
     def test_3_dump_to_open_file(self):
-        with open(self.pickle_file, 'wb') as fp:
+        with open(self.pickle_file, "wb") as fp:
             self.graph.dump(fp)
 
     def test_4_load_from_open_file(self):
-        with open(self.pickle_file, 'rb') as fp:
+        with open(self.pickle_file, "rb") as fp:
             graph = self.graph.load(fp)
         self._check_graph(graph)
 
@@ -79,7 +80,6 @@ class TestGraph(unittest.TestCase):
 
 
 class TestDirectedGraph(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         # Create by adding edges
@@ -98,11 +98,13 @@ class TestDirectedGraph(unittest.TestCase):
         cls.graph2 = graph2
 
         # Create with initial data (nodes & neighbors)
-        graph3 = Graph({
-            1: {2: None, 3: None},
-            2: {4: None},
-            3: {4: None},
-        })
+        graph3 = Graph(
+            {
+                1: {2: None, 3: None},
+                2: {4: None},
+                3: {4: None},
+            }
+        )
         cls.graph3 = graph3
 
     def test_edge_count(self):
@@ -129,27 +131,36 @@ class TestDirectedGraph(unittest.TestCase):
         graph.add_edge(3, 4)
         self.assertEqual(graph.edge_count, 4)
         self.assertEqual(graph.node_count, 4)
-        self.assertEqual(graph, {
-            1: {2: None, 3: None},
-            2: {4: None},
-            3: {4: None},
-            4: {},
-        })
+        self.assertEqual(
+            graph,
+            {
+                1: {2: None, 3: None},
+                2: {4: None},
+                3: {4: None},
+                4: {},
+            },
+        )
         del graph[1]
         self.assertEqual(graph.edge_count, 2)
         self.assertEqual(graph.node_count, 3)
-        self.assertEqual(graph, {
-            2: {4: None},
-            3: {4: None},
-            4: {},
-        })
+        self.assertEqual(
+            graph,
+            {
+                2: {4: None},
+                3: {4: None},
+                4: {},
+            },
+        )
         del graph[4]
         self.assertEqual(graph.edge_count, 0)
         self.assertEqual(graph.node_count, 2)
-        self.assertEqual(graph, {
-            2: {},
-            3: {},
-        })
+        self.assertEqual(
+            graph,
+            {
+                2: {},
+                3: {},
+            },
+        )
 
     def test_remove_edge(self):
         graph = Graph()
@@ -159,25 +170,30 @@ class TestDirectedGraph(unittest.TestCase):
         graph.add_edge(3, 4)
         self.assertEqual(graph.edge_count, 4)
         self.assertEqual(graph.node_count, 4)
-        self.assertEqual(graph, {
-            1: {2: None, 3: None},
-            2: {4: None},
-            3: {4: None},
-            4: {},
-        })
+        self.assertEqual(
+            graph,
+            {
+                1: {2: None, 3: None},
+                2: {4: None},
+                3: {4: None},
+                4: {},
+            },
+        )
         graph.remove_edge(1, 2)
         self.assertEqual(graph.edge_count, 3)
         self.assertEqual(graph.node_count, 4)
-        self.assertEqual(graph, {
-            1: {3: None},
-            2: {4: None},
-            3: {4: None},
-            4: {},
-        })
+        self.assertEqual(
+            graph,
+            {
+                1: {3: None},
+                2: {4: None},
+                3: {4: None},
+                4: {},
+            },
+        )
 
 
 class TestUndirectedGraph(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         # Create by adding edges
@@ -196,11 +212,14 @@ class TestUndirectedGraph(unittest.TestCase):
         cls.graph2 = graph2
 
         # Create with initial data (nodes & neighbors)
-        graph3 = Graph({
-            1: {2: None, 3: None},
-            2: {4: None},
-            3: {4: None},
-        }, undirected=True)
+        graph3 = Graph(
+            {
+                1: {2: None, 3: None},
+                2: {4: None},
+                3: {4: None},
+            },
+            undirected=True,
+        )
         cls.graph3 = graph3
 
     def test_edge_count(self):
@@ -227,27 +246,36 @@ class TestUndirectedGraph(unittest.TestCase):
         graph.add_edge(3, 4)
         self.assertEqual(graph.edge_count, 4)
         self.assertEqual(graph.node_count, 4)
-        self.assertEqual(graph, {
-            1: {2: None, 3: None},
-            2: {1: None, 4: None},
-            3: {1: None, 4: None},
-            4: {2: None, 3: None},
-        })
+        self.assertEqual(
+            graph,
+            {
+                1: {2: None, 3: None},
+                2: {1: None, 4: None},
+                3: {1: None, 4: None},
+                4: {2: None, 3: None},
+            },
+        )
         del graph[1]
         self.assertEqual(graph.edge_count, 2)
         self.assertEqual(graph.node_count, 3)
-        self.assertEqual(graph, {
-            2: {4: None},
-            3: {4: None},
-            4: {2: None, 3: None},
-        })
+        self.assertEqual(
+            graph,
+            {
+                2: {4: None},
+                3: {4: None},
+                4: {2: None, 3: None},
+            },
+        )
         del graph[4]
         self.assertEqual(graph.edge_count, 0)
         self.assertEqual(graph.node_count, 2)
-        self.assertEqual(graph, {
-            2: {},
-            3: {},
-        })
+        self.assertEqual(
+            graph,
+            {
+                2: {},
+                3: {},
+            },
+        )
 
     def test_remove_edge(self):
         graph = Graph(undirected=True)
@@ -257,18 +285,24 @@ class TestUndirectedGraph(unittest.TestCase):
         graph.add_edge(3, 4)
         self.assertEqual(graph.edge_count, 4)
         self.assertEqual(graph.node_count, 4)
-        self.assertEqual(graph, {
-            1: {2: None, 3: None},
-            2: {1: None, 4: None},
-            3: {1: None, 4: None},
-            4: {2: None, 3: None},
-        })
+        self.assertEqual(
+            graph,
+            {
+                1: {2: None, 3: None},
+                2: {1: None, 4: None},
+                3: {1: None, 4: None},
+                4: {2: None, 3: None},
+            },
+        )
         graph.remove_edge(1, 2)
         self.assertEqual(graph.edge_count, 3)
         self.assertEqual(graph.node_count, 4)
-        self.assertEqual(graph, {
-            1: {3: None},
-            2: {4: None},
-            3: {1: None, 4: None},
-            4: {2: None, 3: None},
-        })
+        self.assertEqual(
+            graph,
+            {
+                1: {3: None},
+                2: {4: None},
+                3: {1: None, 4: None},
+                4: {2: None, 3: None},
+            },
+        )

@@ -40,12 +40,16 @@ uvicorn = "*"
 
 [tool.poetry.dev-dependencies]
 "com.wyattbaldwin.make-release" = { version = "*", allow-prereleases = true }
+black = { version = "*", allow-prereleases = true }
 coverage = "*"
 flake8 = "<3.8"
 tox = "*"
 
 [tool.poetry.scripts]
 dijkstar = "dijkstar.__main__:main.console_script"
+
+[tool.black]
+target-version = ["py36"]
 
 [build-system]
 requires = ["poetry>=0.12"]

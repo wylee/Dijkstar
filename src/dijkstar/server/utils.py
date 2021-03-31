@@ -12,7 +12,13 @@ from ..graph import Graph
 log = logging.getLogger(__name__)
 
 
-__all__ = ['abs_path', 'configure_logging', 'import_object', 'load_graph', 'modified_settings']
+__all__ = [
+    "abs_path",
+    "configure_logging",
+    "import_object",
+    "load_graph",
+    "modified_settings",
+]
 
 
 def abs_path(path):
@@ -24,8 +30,8 @@ def abs_path(path):
     """
     has_slash = path.endswith(os.sep)
     if not os.path.isabs(path):
-        if ':' in path:
-            package_name, *rel_path = path.split(':', 1)
+        if ":" in path:
+            package_name, *rel_path = path.split(":", 1)
             package = importlib.import_module(package_name)
             package_path = os.path.dirname(package.__file__)
             path = os.path.join(package_path, *rel_path)
@@ -34,7 +40,7 @@ def abs_path(path):
             path = os.path.abspath(path)
     path = os.path.normpath(path)
     if has_slash:
-        path = f'{path}{os.sep}'
+        path = f"{path}{os.sep}"
     return path
 
 
@@ -46,8 +52,9 @@ def configure_logging(settings):
         logging.config.fileConfig(settings.log_config_file)
     else:
         logging.basicConfig(
-            format='%(levelname)s [%(name)s] %(message)s', level=settings.log_level)
-        root_log = logging.getLogger('dijkstar.server')
+            format="%(levelname)s [%(name)s] %(message)s", level=settings.log_level
+        )
+        root_log = logging.getLogger("dijkstar.server")
         root_log.setLevel(settings.log_level)
 
 
@@ -70,9 +77,9 @@ def import_object(path: str, default=None) -> typing.Any:
     """
     if path is None:
         return default
-    module_path, object_path = path.split(':')
+    module_path, object_path = path.split(":")
     module = importlib.import_module(module_path)
-    names = object_path.split('.')
+    names = object_path.split(".")
     obj = module
     for name in names:
         obj = getattr(obj, name)
@@ -85,29 +92,32 @@ def load_graph(settings) -> Graph:
     if settings.graph_file:
         graph_file_type = settings.graph_file_type
         if graph_file_type:
-            if graph_file_type == 'marshal':
+            if graph_file_type == "marshal":
                 loader = Graph.unmarshal
-            elif graph_file_type == 'pickle':
+            elif graph_file_type == "pickle":
                 loader = Graph.load
             else:
-                raise ValueError('Graph file type must be one of: marshal, pickle')
+                raise ValueError("Graph file type must be one of: marshal, pickle")
         else:
             _, ext = os.path.splitext(graph_file)
             if not ext:
                 raise ValueError(
-                    'Graph file type must be specified via GRAPH_FILE_TYPE or the graph file must '
-                    'have a .marshal or .pickle extension')
-            elif ext == '.marshal':
+                    "Graph file type must be specified via GRAPH_FILE_TYPE or the graph file must "
+                    "have a .marshal or .pickle extension"
+                )
+            elif ext == ".marshal":
                 loader = Graph.unmarshal
-            elif ext == '.pickle':
+            elif ext == ".pickle":
                 loader = Graph.load
             else:
-                raise ValueError('Graph file extension must be one of: .marshal, .pickle')
+                raise ValueError(
+                    "Graph file extension must be one of: .marshal, .pickle"
+                )
         graph = loader(graph_file)
-        log.info(f'Loaded graph from {graph_file}')
+        log.info(f"Loaded graph from {graph_file}")
     else:
         graph = Graph()
-        log.info('Created a new graph since no graph file was specified')
+        log.info("Created a new graph since no graph file was specified")
     return graph
 
 
@@ -128,6 +138,7 @@ def modified_settings(**kwargs):
 
     """
     from .conf import settings
+
     originals = {}
     for name, value in kwargs.items():
         originals[name] = getattr(settings, name)
