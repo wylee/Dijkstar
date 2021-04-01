@@ -4,7 +4,7 @@ import shutil
 import sys
 import textwrap
 
-from runcommands import arg, command, subcommand
+from runcommands import arg, command
 from runcommands.util import abort
 
 from . import __version__
@@ -22,10 +22,8 @@ def main(
     if show_help or version:
         print(f"Dijkstar {__version__}")
     if show_help:
-        print()
-        print(
-            textwrap.fill(f"{main.arg_parser.format_usage()}", term_width), "\n", sep=""
-        )
+        usage = main.arg_parser.format_usage()
+        print(f"\n{textwrap.fill(usage, term_width)}\n")
         print("available subcommands:\n")
         fill = max(len(sub.base_name) for sub in main.subcommands) + 4
         short_desc_width = term_width - fill
@@ -39,7 +37,7 @@ def main(
         print("\n", textwrap.fill(message, term_width), sep="")
 
 
-@subcommand(main)
+@main.subcommand
 def serve(
     # App config
     #
@@ -149,7 +147,7 @@ def serve(
     import yaml
 
     if env_file is None:
-        default_env_file = pathlib.Path.cwd() / pathlib.Path(".env")
+        default_env_file = pathlib.Path.cwd() / ".env"
         if default_env_file.is_file():
             env_file = default_env_file
     else:
