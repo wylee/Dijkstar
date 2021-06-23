@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>{{ content.info.title }}</title>
+        <style>
+            html {
+                box-sizing: border-box;
+                color: black;
+                font-family: sans-serif;
+                font-size: 16px;
+            }
+
+            body {
+                padding: 1em;
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+            }
+
+            *,
+            *:before,
+            *:after {
+                box-sizing: inherit;
+            }
+
+            a {
+                color: steelblue;
+                text-decoration: none;
+            }
+            a:visited {
+                color: purple;
+            }
+            a:hover {
+                color: orange;
+            }
+            a:focus {
+                color: orangered;
+            }
+
+            h1, h2, h3, h4, h5, h6, p {
+                margin-bottom: 0.5em;
+            }
+            h1 > a, h1 > a:visited, h1 > a:hover, h1 > a:focus,
+            h2 > a, h2 > a:visited, h2 > a:hover, h2 > a:focus,
+            h3 > a, h3 > a:visited, h3 > a:hover, h3 > a:focus,
+            h4 > a, h4 > a:visited, h4 > a:hover, h4 > a:focus,
+            h5 > a, h5 > a:visited, h5 > a:hover, h5 > a:focus,
+            h6 > a, h6 > a:visited, h6 > a:hover, h6 > a:focus {
+                text-decoration: none;
+                color: black;
+            }
+
+            ul {
+                list-style: none;
+            }
+            ul > li {
+                padding: 0.5em 0.5em 0.5em 1em;
+            }
+            ul.info > li {
+                border-radius: 0.1em;
+                box-shadow: 1px 1px 2px;
+                margin-bottom: 0.5em;
+            }
+            ul.info > li:nth-child(odd) {
+                background-color: #f8f8f8;
+            }
+        </style>
+    </head>
+</html>
+
+<body>
+    <h1><a href="{{ url_for('home') }}">{{ content.info.title }}</a></h1>
+
+    <ul class="info">
+        {% set paths = content.paths %}
+        {% for path in content.paths %}
+            {% set info = paths[path] %}
+            <li>
+                <h2>{{ path }}</h2>
+                <div>Responds to:</div>
+                <ul>
+                    {% for method in info %}
+                        <li>
+                            <a href="{{ url_for('home').rstrip('/') }}{{ path }}">{{ method|upper }}</a>
+                            <ul>
+                                {% for status in info[method].responses %}
+                                    <li>
+                                        {{ status }}: {{ info[method].responses[status].description }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+</body>

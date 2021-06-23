@@ -1,14 +1,12 @@
-import collections
 import marshal
 import os
+from collections.abc import MutableMapping
 from copy import copy
 
 try:
     import cPickle as pickle
 except ImportError:  # pragma: no cover
     import pickle
-
-from six.moves.collections_abc import MutableMapping
 
 
 class Graph(MutableMapping):
@@ -36,7 +34,6 @@ class Graph(MutableMapping):
     def __init__(self, data=None, undirected=False):
         self._data = {}
         self._undirected = undirected
-        self._incoming = collections.defaultdict(dict)
         if data is not None:
             self.update(data)
 
@@ -96,7 +93,6 @@ class Graph(MutableMapping):
 
         """
         data = self._data
-        incoming = self._incoming
         undirected = self._undirected
 
         if u in data:
@@ -104,7 +100,6 @@ class Graph(MutableMapping):
             neighbors[v] = edge
         else:
             data[u] = {v: edge}
-        incoming[v][u] = edge
 
         if undirected:
             if v in data:
@@ -112,7 +107,8 @@ class Graph(MutableMapping):
                 neighbors[u] = edge
             else:
                 data[v] = {u: edge}
-            incoming[u][v] = edge
+        elif v not in data:
+            data[v] = {}
 
         return edge
 
@@ -123,16 +119,9 @@ class Graph(MutableMapping):
     def remove_edge(self, u, v):
         """Remove edge ``(u, v)``."""
         data = self._data
-        incoming = self._incoming
         del data[u][v]
-        del incoming[v][u]
-        if not incoming[v]:
-            del incoming[v]
         if u in data[v]:
             del data[v][u]
-            del incoming[u][v]
-            if not incoming[u]:
-                del incoming[u]
 
     @property
     def edge_count(self):
@@ -159,7 +148,6 @@ class Graph(MutableMapping):
 
         """
         data = self._data
-        incoming = self._incoming
         undirected = self._undirected
         directed = not undirected
 
@@ -179,13 +167,13 @@ class Graph(MutableMapping):
 
         for v, e in neighbors.items():
             node_data[v] = e
-            incoming[v][u] = e
             if undirected:
                 if v not in data:
                     data[v] = {u: e}
                 else:
                     data[v][u] = e
-                incoming[u][v] = e
+            elif v not in data:
+                data[v] = {}
 
         return node_data
 
@@ -202,31 +190,29 @@ class Graph(MutableMapping):
 
         """
         data = self._data
-        incoming = self._incoming
+        undirected = self._undirected
         neighbors = data[u]
 
-        for v in incoming[u]:
-            del data[v][u]
-        for v in neighbors:
-            del incoming[v][u]
-            if not incoming[v]:
-                del incoming[v]
+        if undirected:
+            for v in neighbors:
+                del data[v][u]
+        else:
+            # Remove edges from all other nodes to the removed node.
+            for neighbors in data.values():
+                if u in neighbors:
+                    del neighbors[u]
 
         del data[u]
-        del incoming[u]
 
     @property
     def node_count(self):
         return len(self._data)
 
-    def get_incoming(self, v):
-        return self._incoming[v]
-
     @classmethod
     def _read(cls, reader, from_):
         """Read from path or open file using specified reader."""
         if isinstance(from_, str):
-            with open(from_, 'rb') as fp:
+            with open(from_, "rb") as fp:
                 data = reader(fp)
         else:
             data = reader(from_)
@@ -235,7 +221,7 @@ class Graph(MutableMapping):
     def _write(self, writer, to):
         """Write to path or open file using specified writer."""
         if isinstance(to, str):
-            with open(to, 'wb') as fp:
+            with open(to, "wb") as fp:
                 writer(self._data, fp)
         else:
             writer(self._data, to)
@@ -255,10 +241,10 @@ class Graph(MutableMapping):
         if not ext and isinstance(from_, str):
             _, ext = os.path.splitext(from_)
         if ext:
-            ext = ext.lstrip('.')
-        if ext == 'pickle':
+            ext = ext.lstrip(".")
+        if ext == "pickle":
             return cls.load(from_)
-        elif ext == 'marshal':
+        elif ext == "marshal":
             return cls.unmarshal(from_)
         try:
             return Graph.load(from_)
@@ -275,9 +261,10 @@ class Graph(MutableMapping):
             else:
                 return cls(data)
         raise ValueError(
-            'Could not guess how to load graph; Graph.guess_load() requires either a file with '
-            'a .pickle or .marshal extension, for the extension/type of the file to be specified, '
-            'or for the file to be loadable with Graph.load() or Graph.unmarshal().')
+            "Could not guess how to load graph; Graph.guess_load() requires either a file with "
+            "a .pickle or .marshal extension, for the extension/type of the file to be specified, "
+            "or for the file to be loadable with Graph.load() or Graph.unmarshal()."
+        )
 
     @classmethod
     def load(cls, from_):

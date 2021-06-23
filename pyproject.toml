@@ -1,0 +1,56 @@
+[tool.poetry]
+name = "Dijkstar"
+version = "3.0.0"
+license = "MIT"
+description = "Dijkstra/A*"
+readme = "README.md"
+authors = ["Wyatt Baldwin <self@wyattbaldwin.com>"]
+repository = "https://github.com/wylee/Dijkstar"
+keywords = ["Dijkstra", "A*", "graph", "algorithm", "shortest paths"]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+]
+
+packages = [
+    { include = "dijkstar", from = "src" }
+]
+
+include = [
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md",
+    "src/dijkstar/server/templates/*.html",
+]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+
+runcommands = { version = "*", allow-prereleases = true }
+
+# Client & Server
+python-multipart = "*"
+requests = "*"
+
+# Server
+jinja2 = "*"
+pyyaml = "*"
+starlette = "*"
+uvicorn = "*"
+
+[tool.poetry.dev-dependencies]
+"com.wyattbaldwin.make-release" = { version = "*", allow-prereleases = true }
+black = { version = "*", allow-prereleases = true }
+coverage = "*"
+flake8 = "<3.8"
+tox = "*"
+
+[tool.poetry.scripts]
+dijkstar = "dijkstar.__main__:main.console_script"
+
+[tool.black]
+target-version = ["py36"]
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
