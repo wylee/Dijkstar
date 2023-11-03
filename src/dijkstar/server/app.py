@@ -1,3 +1,4 @@
+import contextlib
 import http
 import logging
 
@@ -69,9 +70,11 @@ def make_error_response(status_code, detail) -> JSONResponse:
 # Event Handlers
 
 
-def on_startup():
+@contextlib.asynccontextmanager
+async def lifespan(app):
     app.state.settings = settings
     app.state.graph = utils.load_graph(settings)
+    yield
 
 
 # App
@@ -79,10 +82,10 @@ def on_startup():
 
 app = Starlette(
     debug=settings.debug,
+    lifespan=lifespan,
     routes=routes,
     exception_handlers={
         Exception: handler_exception,
         HTTPException: handler_http_exception,
     },
-    on_startup=[on_startup],
 )

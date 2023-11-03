@@ -34,7 +34,6 @@ schemas = SchemaGenerator(
 
 
 class JSONOpenAPIResponse(OpenAPIResponse):
-
     media_type = f"{OpenAPIResponse.media_type}+json"
 
     def render(self, content: dict, as_json=False) -> bytes:

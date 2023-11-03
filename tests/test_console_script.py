@@ -8,7 +8,6 @@ from dijkstar.__main__ import main
 
 
 class TestConsoleScript(unittest.TestCase):
-
     usage = f"Dijkstar {__version__}\n\nusage: dijkstar"
 
     @classmethod

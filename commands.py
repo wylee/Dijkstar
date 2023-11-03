@@ -1,54 +1,46 @@
 from pathlib import Path
 from shutil import rmtree
 
-from runcommands import command
-from runcommands.commands import local as _local
-
+from runcommands import command, commands as c, printer
 
 __all__ = ["install"]
 
-
-VENV = ".venv"
-BIN = f"./{VENV}/bin"
+VENV = Path(__file__).parent / ".venv"
+BIN = VENV / "bin"
+COVERAGE = BIN / "coverage"
+PIP = BIN / "pip"
+PYTHON = BIN / "python"
+RUFF = BIN / "ruff"
 
 
 @command
 def install():
-    _local("poetry install")
+    c.local("poetry install")
 
 
 @command
 def update():
-    _local(f"{BIN}/pip install --upgrade --upgrade-strategy eager pip")
-    _local("rm -f poetry.lock")
-    _local("poetry update")
+    c.local(f"{PIP} install --upgrade --upgrade-strategy eager pip")
+    c.local("rm -f poetry.lock")
+    c.local("poetry update")
 
 
 @command
 def format_code(check=False):
-    if check:
-        _local("black --check .")
-    else:
-        _local("black .")
-
-
-@command
-def lint():
-    _local("flake8 .")
+    c.local((RUFF, "check" if check else "format", "."))
 
 
 @command
 def test(*tests, with_coverage=True, check=True):
     if tests:
-        _local(f'{BIN}/python -m unittest {" ".join(tests)}')
+        c.local((f"{PYTHON}", "-m", "unittest", tests))
     elif with_coverage:
-        _local(f"{BIN}/coverage run --source dijkstar -m unittest discover .")
-        _local(f"{BIN}/coverage report --show-missing")
+        c.local(f"{COVERAGE} run --source dijkstar -m unittest discover .")
+        c.local(f"{COVERAGE} report --show-missing")
     else:
-        _local(f"{BIN}/python -m unittest discover .")
+        c.local(f"{PYTHON} -m unittest discover .")
     if check:
         format_code(check=True)
-        lint()
 
 
 @command
@@ -56,9 +48,11 @@ def tox(envs=(), clean=False):
     if clean:
         path = Path(".tox")
         if path.is_dir():
+            printer.warning("Removing .tox directory...", end="")
             rmtree(path)
+            printer.print()
     args = []
     if envs:
         args.append("-e")
         args.extend(envs)
-    _local(("tox", args))
+    c.local(("tox", args))

@@ -76,6 +76,7 @@
     <h1><a href="{{ url_for('home') }}">{{ content.info.title }}</a></h1>
 
     <ul class="info">
+        {% set base_url = url_for("home").__str__().rstrip("/") %}
         {% set paths = content.paths %}
         {% for path in content.paths %}
             {% set info = paths[path] %}
@@ -85,7 +86,7 @@
                 <ul>
                     {% for method in info %}
                         <li>
-                            <a href="{{ url_for('home').rstrip('/') }}{{ path }}">{{ method|upper }}</a>
+                            <a href="{{ base_url }}{{ path }}">{{ method|upper }}</a>
                             <ul>
                                 {% for status in info[method].responses %}
                                     <li>
