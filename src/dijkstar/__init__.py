@@ -17,9 +17,8 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ###############################################################################
-# flake8: noqa: F401
 from dijkstar.algorithm import find_path, NoPathError
 from dijkstar.graph import Graph
 
 
-__version__ = '2.6.0'
+__version__ = "3.0a5"
