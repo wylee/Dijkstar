@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Dijkstar"
-version = "3.0.0"
+version = "3.0a5"
 license = "MIT"
 description = "Dijkstra/A*"
 readme = "README.md"

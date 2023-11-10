@@ -1,6 +1,22 @@
-## 3.0.0 - unreleased
+## 3.0a5 - 2023-11-10
 
-In progress...
+- Dropped support for Python 3.6 and 3.7 as these version are EOL (see
+  https://devguide.python.org/versions/#versions). These versions are no
+  longer tested, but Dijkstar should continue to work with them for the
+  time being.
+- Added nominal support for Python 3.10, 3.11, and 3.12. No code changes
+  were made to support these versions--they were just added to the list
+  of versions tested using `tox`.
+- Fixed import of `MutableMapping`. This was fixed a while back but
+  never released.
+- Switched from `flake8` to `ruff` for linting and reformatting code.
+- Made a couple tweaks to support the latest version of Starlette
+  (currently 0.31.0). In particular, `lifespan` is now used instead of
+  `on_startup`.
+
+## 3.0a4 - 2019-12-19
+
+Changes for this verson weren't recorded.
 
 ## 3.0a3 - 2019-11-17
 
