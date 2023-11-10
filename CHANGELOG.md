@@ -1,3 +1,7 @@
+## 3.0.0 - unreleased
+
+In progress...
+
 ## 3.0a5 - 2023-11-10
 
 - Dropped support for Python 3.6 and 3.7 as these version are EOL (see
