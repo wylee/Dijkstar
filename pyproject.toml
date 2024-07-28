@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Dijkstar"
-version = "3.0a5"
+version = "3.0a6"
 license = "MIT"
 description = "Dijkstra/A*"
 readme = "README.md"
@@ -47,7 +47,7 @@ tox = "*"
 [tool.poetry.scripts]
 dijkstar = "dijkstar.__main__:main.console_script"
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
 
 [build-system]

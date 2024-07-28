@@ -125,7 +125,8 @@ class Graph(MutableMapping):
 
     @property
     def edge_count(self):
-        count = sum(len(neighbors) for neighbors in self._data.values())
+        """Total number of neighbors for every node in the graph."""
+        count = sum(map(len, self._data.values()))
         if self._undirected:
             assert count % 2 == 0
             count = count // 2
