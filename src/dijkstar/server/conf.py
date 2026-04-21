@@ -8,7 +8,6 @@ from starlette.config import Config
 
 from . import utils
 
-
 __all__ = ["settings"]
 
 
@@ -81,7 +80,7 @@ settings = Settings(
         "doc": "Server host",
         "default": "127.0.0.1",
     },
-    port={"doc": "Server port", "cast": int, "default": 8000},
+    port={"doc": "Server port", "cast": int, "default": 8001},
     log_config_file={
         "doc": "Path to Python logging config file (see "
         "https://docs.python.org/3/library/logging.config.html)",

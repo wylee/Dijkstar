@@ -77,7 +77,7 @@ def serve(
         short_option="-R",
         type=bool,
         help="Make graph read only by disabling endpoints that modify the graph; this only "
-             "applies when a graph file is specified [Don't make read only]",
+        "applies when a graph file is specified [Don't make read only]",
     ) = None,
     node_serializer: arg(short_option="-n") = None,
     node_deserializer: arg(short_option="-N") = None,
@@ -102,8 +102,8 @@ def serve(
     ) = "127.0.0.1",
     port: arg(
         short_option="-p",
-        help="Uvicorn port [8000]",
-    ) = 8000,
+        help="Uvicorn port [8001]",
+    ) = 8001,
     reload: arg(
         short_option="-r",
         help="Automatically reload uvicorn server when source changes [Don't reload]",
@@ -116,7 +116,7 @@ def serve(
         short_option="-d",
         type=bool,
         help="Enable debug mode in both app and uvicorn; will *also* enable auto-reloading "
-             "(implies --reload) [Don't debug]",
+        "(implies --reload) [Don't debug]",
     ) = None,
     # Info args (show and exit)
     show_settings: arg(

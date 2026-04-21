@@ -97,7 +97,7 @@ console script. The server can be run like so:
 
     dijkstar serve
 
-This runs `uvicorn` on `127.0.0.1:8000` with an empty graph.
+This runs `uvicorn` on `127.0.0.1:8001` with an empty graph.
 
 A previously-saved graph can be loaded from disk like so:
 
@@ -121,7 +121,6 @@ settings in the `dijkstar.server.conf` module (with names upper-cased).
 
 TODO: Document environment variables here.
 
-
 ### Road Map/Planned Features
 
 - [x] Console script to run server
@@ -129,24 +128,24 @@ TODO: Document environment variables here.
 - [x] Configuration console script options
 - [x] Load graph from file on startup
 - [ ] Endpoints
-  - [ ] HTML home page listing available endpoints
-  - [x] /graph-info -> Basic graph info
-  - [x] /load-graph -> Load a new graph (from file or data)
-  - [x] /reload-graph -> Reload the current graph file
-  - [ ] /add-edge -> Add edge to graph
-  - [x] /get-edge -> Get edge from graph
-  - [ ] /add-node -> Add node to graph
-  - [x] /get-node -> Get node from graph
-  - [x] /find-path -> Find path between nodes in graph
+    - [ ] HTML home page listing available endpoints
+    - [x] /graph-info -> Basic graph info
+    - [x] /load-graph -> Load a new graph (from file or data)
+    - [x] /reload-graph -> Reload the current graph file
+    - [ ] /add-edge -> Add edge to graph
+    - [x] /get-edge -> Get edge from graph
+    - [ ] /add-node -> Add node to graph
+    - [x] /get-node -> Get node from graph
+    - [x] /find-path -> Find path between nodes in graph
 - [ ] Client wrapping server API calls
-  - [x] Graph info
-  - [x] Load graph
-  - [x] Reload graph
-  - [ ] Add edge
-  - [x] Get edge
-  - [ ] Add node
-  - [x] Get node
-  - [x] Find path
+    - [x] Graph info
+    - [x] Load graph
+    - [x] Reload graph
+    - [ ] Add edge
+    - [x] Get edge
+    - [ ] Add node
+    - [x] Get node
+    - [x] Find path
 - [ ] Auth?
 
 ### Clients
@@ -155,14 +154,14 @@ Any HTTP client can be used to make requests to the server, such as
 `fetch` in the browser or `curl` on the command line. For example,
 `fetch` can be used to interact with a graph directly from a web app:
 
-    const response = await fetch('http://localhost:8000/graph-info')
+    const response = await fetch('http://localhost:8001/graph-info')
     const info = await response.json();
 
 Dijkstar also includes a client that can be used to make requests
 conveniently from Python code:
 
     from dijkstar.server.client import Client
-    client = Client()  # Uses the default base URL http://localhost:8000
+    client = Client()  # Uses the default base URL http://localhost:8001
     info = client.graph_info()
 
 This is intended for use in scripts, back end web services, and the

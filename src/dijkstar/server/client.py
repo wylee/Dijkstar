@@ -4,7 +4,6 @@ from typing import Any, Callable
 
 import requests
 
-
 __all__ = ["Client", "ClientError"]
 
 
@@ -44,7 +43,7 @@ class Client:
 
     def __init__(
         self,
-        base_url: str = "http://localhost:8000",
+        base_url: str = "http://localhost:8001",
         node_serializer: Callable[[Any], str] = json.dumps,
         node_deserializer: Callable[[str], Any] = json.loads,
         edge_serializer: Callable[[Any], str] = json.dumps,
