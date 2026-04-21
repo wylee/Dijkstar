@@ -28,7 +28,6 @@ def route(method):
 
 
 class Client:
-
     """Client interface.
 
     For more details, see the corresponding functions in the

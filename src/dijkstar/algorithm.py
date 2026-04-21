@@ -1,36 +1,40 @@
 """Dijkstra/A* path-finding functions."""
-from collections import namedtuple
+
+from dataclasses import dataclass
 from heapq import heappush, heappop
 from inspect import ismethod
 from itertools import count
+from typing import Any
 
 
-PathInfo = namedtuple("PathInfo", ("nodes", "edges", "costs", "total_cost"))
-"""Info for shortest path found between start and destination nodes.
+@dataclass
+class PathInfo:
+    nodes: Any
+    """Nodes comprising the shortest path."""
 
-``nodes``
-    Nodes comprising the shortest path.
+    edges: Any
+    """Edges comprising the shortest path."""
 
-``edges``
-    Edges comprising the shortest path.
-
-``costs``
-    Cost to traverse each edge in ``edges``. When a cost function is
+    costs: Any
+    """Cost to traverse each edge in ``edges``. When a cost function is
     passed to :func:`find_path`, these will be *computed* costs, which
     may or not correspond to any real world value such as edge length
     (depends on the cost function and how it computes costs). When a
     cost function isn't passed, this will be equal to ``edges``.
+    """
 
-``total_cost``
-    This is simply the sum of ``costs``. When a cost function is passed
-    to :func:`find_path`, this will be the sum of the *computed* costs,
-    which may not correspond to any real world value. When a cost
+    total_cost: Any
+    """This is simply the sum of ``costs``. When a cost function is
+    passed to :func:`find_path`, this will be the sum of the *computed*
+    costs, which may not correspond to any real world value. When a cost
     function isn't used, this will be equal to ``sum(edges)``.
+    """
 
-"""
 
-
-DebugInfo = namedtuple("DebugInfo", "costs visited")
+@dataclass
+class DebugInfo:
+    costs: Any
+    visited: Any
 
 
 class DijkstarError(Exception):
@@ -41,11 +45,11 @@ class NoPathError(DijkstarError):
     """Raised when a path can't be found to a specified node."""
 
 
-def find_path(graph, s, d, annex=None, cost_func=None, heuristic_func=None):
+def find_path(graph, s, d, annex=None, cost_func=None, heuristic_func=None) -> PathInfo:
     """Find the shortest path from ``s`` to ``d`` in ``graph``.
 
     This is a wrapper around :func:`single_source_shortest_paths` that
-    extracts path info from the the predecessor list. Look there for a
+    extracts path info from the predecessor list. Look there for a
     description of the args.
 
     Returns
@@ -53,14 +57,25 @@ def find_path(graph, s, d, annex=None, cost_func=None, heuristic_func=None):
 
     """
     predecessors = single_source_shortest_paths(
-        graph, s, d, annex, cost_func, heuristic_func
+        graph,
+        s,
+        d,
+        annex,
+        cost_func,
+        heuristic_func,
     )
     return extract_shortest_path_from_predecessor_list(predecessors, d)
 
 
 def single_source_shortest_paths(
-    graph, s, d=None, annex=None, cost_func=None, heuristic_func=None, debug=False
-):
+    graph,
+    s,
+    d=None,
+    annex=None,
+    cost_func=None,
+    heuristic_func=None,
+    debug=False,
+) -> dict | tuple[dict, DebugInfo]:
     """Find path from node ``s`` to all other nodes or just to ``d``.
 
     ``graph``
@@ -161,7 +176,7 @@ def single_source_shortest_paths(
         if annex and u in annex and annex[u]:
             neighbors = annex[u]
         else:
-            neighbors = graph[u] if u in graph else None
+            neighbors = graph[u] if u in graph else {}
 
         if not neighbors:
             # u has no outgoing edges
@@ -187,11 +202,11 @@ def single_source_shortest_paths(
             # the current known cost to v.
             cost_of_s_to_u_plus_cost_of_e = cost_of_s_to_u + cost_of_e
 
-            # When there is a heuristic function, we use a
-            # "guess-timated" cost, which is the normal cost plus some
-            # other heuristic cost from v to d that is calculated so as
-            # to keep us moving in the right direction (generally more
-            # toward the goal instead of away from it).
+            # When there is a heuristic function, we use a guesstimated
+            # cost, which is the normal cost plus some other heuristic
+            # cost from v to d that is calculated to keep the algorithm
+            # moving in the right direction (generally more toward the
+            # goal instead of away from it).
             if heuristic_func:
                 additional_cost = heuristic_func(u, v, e, prev_e)
                 cost_of_s_to_u_plus_cost_of_e += additional_cost
@@ -217,7 +232,7 @@ def single_source_shortest_paths(
     return predecessors
 
 
-def extract_shortest_path_from_predecessor_list(predecessors, d):
+def extract_shortest_path_from_predecessor_list(predecessors, d) -> PathInfo:
     """Extract ordered lists of nodes, edges, costs from predecessor list.
 
     ``predecessors``

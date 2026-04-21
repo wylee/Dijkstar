@@ -28,7 +28,7 @@ def main(
         fill = max(len(sub.base_name) for sub in main.subcommands) + 4
         short_desc_width = term_width - fill
         for sub in main.subcommands:
-            name = f'{f"  {sub.base_name}":<{fill}}'
+            name = f"{f'  {sub.base_name}':<{fill}}"
             lines = textwrap.wrap(sub.short_description, short_desc_width)
             print(name, lines[0], sep="")
             for line in lines[1:]:
@@ -77,7 +77,7 @@ def serve(
         short_option="-R",
         type=bool,
         help="Make graph read only by disabling endpoints that modify the graph; this only "
-        "applies when a graph file is specified [Don't make read only]",
+             "applies when a graph file is specified [Don't make read only]",
     ) = None,
     node_serializer: arg(short_option="-n") = None,
     node_deserializer: arg(short_option="-N") = None,
@@ -116,7 +116,7 @@ def serve(
         short_option="-d",
         type=bool,
         help="Enable debug mode in both app and uvicorn; will *also* enable auto-reloading "
-        "(implies --reload) [Don't debug]",
+             "(implies --reload) [Don't debug]",
     ) = None,
     # Info args (show and exit)
     show_settings: arg(
@@ -200,7 +200,7 @@ def serve(
         utils.configure_logging(settings)
 
         locals_ = locals()
-        uvicorn_args = ("root_path", "host", "port", "debug", "reload", "workers")
+        uvicorn_args = ("root_path", "host", "port", "reload", "workers")
         uvicorn_args = {n: locals_.get(n) for n in uvicorn_args}
         uvicorn_args = {n: v for (n, v) in uvicorn_args.items() if v is not None}
 

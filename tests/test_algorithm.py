@@ -72,20 +72,18 @@ class Tests(unittest.TestCase):
 
     def test_find_path_1(self):
         result = find_path(self.graph1, 1, 4)
-        nodes, edges, costs, total_cost = result
-        self.assertEqual(nodes, [1, 2, 4])
-        self.assertEqual(edges, [1, 2])
-        self.assertEqual(costs, [1, 2])
-        self.assertEqual(total_cost, 3)
+        self.assertEqual(result.nodes, [1, 2, 4])
+        self.assertEqual(result.edges, [1, 2])
+        self.assertEqual(result.costs, [1, 2])
+        self.assertEqual(result.total_cost, 3)
 
     def test_find_path_with_annex(self):
         annex = Graph({-1: {1: 1}, 4: {-2: 1}})
         result = find_path(self.graph1, -1, -2, annex=annex)
-        nodes, edges, costs, total_cost = result
-        self.assertEqual(nodes, [-1, 1, 2, 4, -2])
-        self.assertEqual(edges, [1, 1, 2, 1])
-        self.assertEqual(costs, edges)
-        self.assertEqual(total_cost, 5)
+        self.assertEqual(result.nodes, [-1, 1, 2, 4, -2])
+        self.assertEqual(result.edges, [1, 1, 2, 1])
+        self.assertEqual(result.costs, result.edges)
+        self.assertEqual(result.total_cost, 5)
 
     def test_path_with_cost_func(self):
         graph = {
@@ -102,8 +100,7 @@ class Tests(unittest.TestCase):
             return cost
 
         result = find_path(graph, "a", "d", cost_func=cost_func)
-        nodes, edges, costs, total_cost = result
-        self.assertEqual(nodes, ["a", "c", "d"])
+        self.assertEqual(result.nodes, ["a", "c", "d"])
 
     def test_find_path_with_heuristic(self):
         def heuristic(u, v, e, prev_e):
@@ -128,20 +125,19 @@ class Tests(unittest.TestCase):
         self.assertTrue(len(heuristic_info.visited) < len(no_heuristic_info.visited))
 
         result = extract_shortest_path_from_predecessor_list(predecessors, d)
-        nodes, edges, costs, total_cost = result
 
-        self.assertEqual(nodes[0], s)
-        self.assertEqual(nodes[-1], d)
-        self.assertEqual(edges, costs)
-        self.assertEqual(total_cost, 6)
+        self.assertEqual(result.nodes[0], s)
+        self.assertEqual(result.nodes[-1], d)
+        self.assertEqual(result.edges, result.costs)
+        self.assertEqual(result.total_cost, 6)
 
     def test_find_path_2(self):
-        path = find_path(self.graph2, "a", "i")[0]
-        self.assertEqual(path, ["a", "d", "e", "f", "i"])
+        info = find_path(self.graph2, "a", "i")
+        self.assertEqual(info.nodes, ["a", "d", "e", "f", "i"])
 
     def test_find_path_3(self):
-        path = find_path(self.graph3, "a", "c")[0]
-        self.assertEqual(path, ["a", "d", "e", "f", "c"])
+        info = find_path(self.graph3, "a", "c")
+        self.assertEqual(info.nodes, ["a", "d", "e", "f", "c"])
 
     def test_unreachable_dest(self):
         self.assertRaises(NoPathError, find_path, self.graph3, "c", "a")
@@ -163,8 +159,7 @@ class Tests(unittest.TestCase):
 
     def test_start_and_destination_same(self):
         result = find_path(self.graph1, 1, 1)
-        nodes, edges, costs, total_cost = result
-        self.assertEqual(nodes, [1])
-        self.assertEqual(edges, [])
-        self.assertEqual(costs, [])
-        self.assertEqual(total_cost, 0)
+        self.assertEqual(result.nodes, [1])
+        self.assertEqual(result.edges, [])
+        self.assertEqual(result.costs, [])
+        self.assertEqual(result.total_cost, 0)

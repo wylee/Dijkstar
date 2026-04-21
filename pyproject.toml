@@ -1,55 +1,44 @@
-[tool.poetry]
+[build-system]
+requires = ["uv_build>=0.11.6,<0.12"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "dijkstar"
+
+[project]
 name = "Dijkstar"
-version = "3.0.0.dev0"
-license = "MIT"
+version = "3.0a7.dev0"
 description = "Dijkstra/A*"
+authors = [{ name = "Wyatt Baldwin", email = "code@wyattbaldwin.com" }]
 readme = "README.md"
-authors = ["Wyatt Baldwin <self@wyattbaldwin.com>"]
+license = "MIT"
 repository = "https://github.com/wylee/Dijkstar"
 keywords = ["Dijkstra", "A*", "graph", "algorithm", "shortest paths"]
 
-classifiers = [
-    "Development Status :: 4 - Beta",
+requires-python = ">=3.11"
+
+dependencies = [
+    "runcommands>=1.0a73",
+    # Client & Server
+    "python-multipart>=0.0.26",
+    "requests>2.33.0",
+    # Server
+    "jinja2>3.1.5",
+    "pyyaml>=6.0.3",
+    "starlette>=1.0.0",
+    "uvicorn>=0.44.0",
 ]
 
-packages = [
-    { include = "dijkstar", from = "src" }
+[dependency-groups]
+dev = [
+    "com.wyattbaldwin.make-release",
+    "coverage",
+    "ruff",
+    "tox",
 ]
 
-include = [
-    "CHANGELOG.md",
-    "LICENSE",
-    "README.md",
-    "src/dijkstar/server/templates/*.html",
-]
-
-[tool.poetry.dependencies]
-python = "^3.8"
-
-runcommands = { version = "*", allow-prereleases = true }
-
-# Client & Server
-python-multipart = "*"
-requests = "*"
-
-# Server
-jinja2 = "*"
-pyyaml = "*"
-starlette = "*"
-uvicorn = "*"
-
-[tool.poetry.group.dev.dependencies]
-"com.wyattbaldwin.make-release" = { version = "*", allow-prereleases = true }
-coverage = "*"
-ruff = "*"
-tox = "*"
-
-[tool.poetry.scripts]
+[project.scripts]
 dijkstar = "dijkstar.__main__:main.console_script"
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
-
-[build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"

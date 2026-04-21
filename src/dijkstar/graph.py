@@ -10,7 +10,6 @@ except ImportError:  # pragma: no cover
 
 
 class Graph(MutableMapping):
-
     """A very simple graph type.
 
     Its structure looks like this::

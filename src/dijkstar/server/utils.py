@@ -8,9 +8,7 @@ import typing
 
 from ..graph import Graph
 
-
 log = logging.getLogger(__name__)
-
 
 __all__ = [
     "abs_path",
@@ -59,7 +57,7 @@ def configure_logging(settings):
 
 
 @functools.lru_cache()
-def import_object(path: str, default=None) -> typing.Any:
+def import_object(path: str | None, default=None) -> typing.Any:
     """Import object from path.
 
     Paths have the format ``module_path:object_path``.

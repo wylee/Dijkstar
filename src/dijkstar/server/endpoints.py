@@ -1,5 +1,6 @@
 import io
 import json
+from dataclasses import asdict
 
 from starlette.exceptions import HTTPException
 from starlette.requests import Request
@@ -7,10 +8,9 @@ from starlette.responses import JSONResponse
 from starlette.schemas import OpenAPIResponse, SchemaGenerator
 from starlette.templating import _TemplateResponse
 
-from .. import algorithm, Graph
 from . import utils
 from .templates import render_template
-
+from .. import algorithm, Graph
 
 __all__ = [
     "get_edge",
@@ -20,7 +20,6 @@ __all__ = [
     "home",
     "schema",
 ]
-
 
 schemas = SchemaGenerator(
     {
@@ -122,8 +121,8 @@ async def load_graph(request: Request) -> JSONResponse:
         message = "Graph loaded from data"
     else:
         graph = utils.load_graph(settings)
-        if settings.graph_file:
-            message = f"Graph reloaded from {settings.graph_file}"
+        graph_file = settings.graph_file
+        message = f"Graph reloaded from {graph_file}" if graph_file else None
 
     app.state.graph = graph
     return JSONResponse(message)
@@ -307,9 +306,10 @@ async def find_path(request: Request) -> JSONResponse:
                 edge = edge_deserializer(edge)
             annex.add_edge(u, v, edge)
 
-    if start_node not in graph and start_node not in annex:
+    if start_node not in graph and annex and start_node not in annex:
         raise HTTPException(400, f"Node {start_node} not present in graph")
-    if destination_node not in graph and destination_node not in annex:
+
+    if destination_node not in graph and annex and destination_node not in annex:
         raise HTTPException(400, f"Node {destination_node} not present in graph")
 
     cost_func = query_params.get("cost_func")
@@ -334,7 +334,7 @@ async def find_path(request: Request) -> JSONResponse:
     except algorithm.NoPathError as exc:
         raise HTTPException(404, str(exc))
 
-    info = info._asdict()
+    info = asdict(info)
 
     if fields:
         filtered_info = {}

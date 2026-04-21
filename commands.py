@@ -15,14 +15,12 @@ RUFF = BIN / "ruff"
 
 @command
 def install():
-    c.local("poetry install")
+    c.local("uv sync")
 
 
 @command
 def update():
-    c.local(f"{PIP} install --upgrade --upgrade-strategy eager pip")
-    c.local("rm -f poetry.lock")
-    c.local("poetry update")
+    c.local("uv sync --upgrade")
 
 
 @command

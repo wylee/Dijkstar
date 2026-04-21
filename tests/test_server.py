@@ -88,7 +88,6 @@ class TestClient(unittest.TestCase):
             },
         )
 
-        # XXX: This has to be set for Python 3.8 only (???)
         os.environ["GRAPH_FILE"] = graph_file.name
 
         with utils.modified_settings(graph_file=cls.graph_file):

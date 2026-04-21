@@ -13,7 +13,6 @@ __all__ = ["settings"]
 
 
 class Settings:
-
     """Container for settings."""
 
     def __init__(self, **data):
