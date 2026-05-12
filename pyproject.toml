@@ -20,13 +20,8 @@ requires-python = ">=3.11"
 dependencies = [
     "runcommands>=1.0a73",
     # Client & Server
-    "python-multipart>=0.0.26",
-    "requests>2.33.0",
-    # Server
-    "jinja2>3.1.5",
-    "pyyaml>=6.0.3",
-    "starlette>=1.0.0",
-    "uvicorn>=0.44.0",
+    "python-multipart>=0.0.28",
+    "requests>=2.33.1",
 ]
 
 [dependency-groups]
@@ -35,6 +30,14 @@ dev = [
     "coverage",
     "ruff",
     "tox",
+]
+
+[project.optional-dependencies]
+server = [
+    "jinja2>=3.1.6",
+    "pyyaml>=6.0.3",
+    "starlette>=1.0.0",
+    "uvicorn>=0.46.0",
 ]
 
 [project.scripts]

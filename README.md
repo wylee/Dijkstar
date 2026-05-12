@@ -88,9 +88,11 @@ Graph instance):
 
 Dijkstar comes with a simple, standalone, web-based graph server that's
 built on top of [Starlette](https://www.starlette.io/) and
-[Uvicorn](https://www.uvicorn.org/). It can be installed with pip:
+[Uvicorn](https://www.uvicorn.org/). It can be installed with pip, uv,
+etc:
 
     pip install Dijkstar[server]
+    uv add Dijkstar[server]
 
 This installs additional libraries as well as the `dijkstar serve`
 console script. The server can be run like so:
